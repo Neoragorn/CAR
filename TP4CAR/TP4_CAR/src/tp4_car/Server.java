@@ -22,7 +22,7 @@ public class Server {
 
     public void start() throws RemoteException {
         InterfaceServer skeleton = (InterfaceServer) UnicastRemoteObject.exportObject(new InterfaceImplServer(), 4010);
-        Registry registry = LocateRegistry.createRegistry(4010);
+        Registry registry = LocateRegistry.createRegistry(4010);        
         registry.rebind("Add", skeleton);
         System.out.println("Server created");
     }
