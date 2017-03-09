@@ -7,12 +7,13 @@ package Models;
 
 import Persistence.MessageDiscussionGroupVirtualProxy;
 import Persistence.UserDiscussionGroupVirtualProxy;
+import java.io.Serializable;
 
 /**
  *
  * @author sofian
  */
-public class DiscussionGroup {
+public class DiscussionGroup implements Serializable {
 
     private int idDiscussion;
     private int idCreator;

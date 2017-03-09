@@ -6,24 +6,16 @@
 package Frame_Client;
 
 import Bean_Client.UserBean;
-import static Frame_Client.Connection.Pseudo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import tp5_car_client.InterfaceImplClient;
-import tp5_car_interface.InterfaceClient;
-import tp5_car_interface.InterfaceServer;
 
 /**
  *

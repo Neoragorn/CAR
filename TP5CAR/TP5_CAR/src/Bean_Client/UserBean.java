@@ -103,22 +103,18 @@ public class UserBean {
 
     public boolean connectUser(String pseudo, String pwd) {
         try {
-            System.out.println("Entenred connectuser");
             User user = new User();
             InterfaceServer stub;
             InterfaceClient clInter = new InterfaceImplClient();
             if (this.user == null) {
-                System.out.println("Entenred registry creating");
+
                 if (registry == null) {
                     registry = LocateRegistry.getRegistry(4010);
-                    System.out.println("registry done");
+
                 }
                 stub = (InterfaceServer) registry.lookup("mini-chat");
-                                System.out.println("stub done");
                 user = stub.Connect(pseudo, pwd, clInter);
-                                System.out.println("connec done");
                 if (user != null) {
-                    System.out.println("setting user");
                     user.setRegistry(registry);
                     user.setClInter(clInter);
                     user.setStub(stub);

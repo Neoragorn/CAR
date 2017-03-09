@@ -2,7 +2,6 @@ package Frame_Client;
 
 import Bean_Client.DiscussionGroupBean;
 import Bean_Client.UserBean;
-import Models.Category;
 import Models.DiscussionGroup;
 import Models.Friend;
 import Models.Message;
@@ -164,7 +163,7 @@ public class Home extends JPanel implements ActionListener, ListSelectionListene
         }
 
         try {
-            DiscussionGroupBean.getInstance().recoverJoinedDiscussionGroups(UserBean.getInstance().getUser());
+            UserBean.getInstance().getUser().getClInter().RecoverJoinedDiscussion();
             for (DiscussionGroup discusionGroup : DiscussionGroupBean.getInstance().getJoinedDiscussionGroup()) {
                 listJoinedDiscussion.addElement("-->" + discusionGroup.getTitle() + "           ->" + discusionGroup.getDescription());
             }
@@ -173,7 +172,7 @@ public class Home extends JPanel implements ActionListener, ListSelectionListene
         }
 
         try {
-            DiscussionGroupBean.getInstance().recoverNotJoinedDiscussionGroups(UserBean.getInstance().getUser());
+            UserBean.getInstance().getUser().getClInter().RecoverDiscussion();
             for (DiscussionGroup discusionGroup : DiscussionGroupBean.getInstance().getNotJoinedDiscussionGroup()) {
                 listNotJoinedDiscussion.addElement("-->" + discusionGroup.getTitle() + "           ->" + discusionGroup.getDescription());
             }

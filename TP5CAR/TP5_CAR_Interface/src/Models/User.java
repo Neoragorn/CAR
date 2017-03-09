@@ -26,6 +26,7 @@ public class User implements Serializable {
 
     }
 
+    
     public User(int id, String pseudo, String mail) {
         this.idUser = id;
         this.pseudo = pseudo;

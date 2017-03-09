@@ -5,8 +5,13 @@
  */
 package tp5_car_server;
 
+import Models.DiscussionGroup;
+import Models.Friend;
 import Models.User;
+import Persistence.DiscussionGroupBdd;
 import Persistence.UserBdd;
+import Persistence.UserCategoryVirtualProxy;
+import Persistence.UserMessageVirtualProxy;
 import tp5_car_interface.InterfaceServer;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +44,10 @@ public class InterfaceImplServer implements InterfaceServer {
     public User Connect(String login, String mdp, InterfaceClient cl) throws RemoteException, SQLException, NoSuchAlgorithmException {
         System.out.println("Entered Connec");
         User user = UserBdd.getUser(login, mdp);
-        System.out.println("getuser done");
+        user.setProxyMessage(new UserMessageVirtualProxy(user.getIdUser()));
+        user.setProxyCategory(new UserCategoryVirtualProxy(user.getIdUser()));
+        ArrayList<Friend> friend = UserBdd.getFriends(user);
+        user.setFriends(friend);
         if (user != null) {
             System.out.println("Client connected : " + login);
             NotifyAll(" s'est connecté", login, cl);
@@ -59,5 +67,25 @@ public class InterfaceImplServer implements InterfaceServer {
     @Override
     public void Send(String message, String login, InterfaceClient cl) throws RemoteException {
         NotifyAll(message, login, cl);
+    }
+
+    @Override
+    public ArrayList<DiscussionGroup> giveDiscussion(User user) throws RemoteException {
+        try {
+            return DiscussionGroupBdd.getNotJoinedDiscussionGroupBdd(user);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    @Override
+    public ArrayList<DiscussionGroup> giveJoinedDiscussion(User user) throws RemoteException {
+        try {
+            return DiscussionGroupBdd.getJoinedDiscussionGroupBdd(user);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
     }
 }

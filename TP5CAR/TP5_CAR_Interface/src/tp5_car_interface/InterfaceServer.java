@@ -5,11 +5,13 @@
  */
 package tp5_car_interface;
 
+import Models.DiscussionGroup;
 import Models.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,4 +27,7 @@ public interface InterfaceServer extends Remote {
 
     void Disonnect(String login, InterfaceClient cl) throws RemoteException;
 
+    ArrayList<DiscussionGroup> giveDiscussion(User user) throws RemoteException; 
+    
+    ArrayList<DiscussionGroup> giveJoinedDiscussion(User user) throws RemoteException;
 }

@@ -72,7 +72,7 @@ public class DiscussionGroupBdd {
     public static ArrayList<DiscussionGroup> getNotJoinedDiscussionGroupBdd(User user) throws SQLException {
         try {
             ArrayList<DiscussionGroup> discussionGroups = new ArrayList();
-
+            System.out.println("entered not joined bdd");
             String req = "SELECT idGroup, idCreator, title, description FROM DiscussionGroup  discu "
                     + "WHERE idGroup NOT IN "
                     + "(SELECT discu2.idGroup FROM DiscussionGroup discu2 "

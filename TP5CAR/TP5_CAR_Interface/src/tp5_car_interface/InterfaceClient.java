@@ -18,4 +18,7 @@ public interface InterfaceClient extends Remote {
 
     void Receive(String login, String message) throws RemoteException;
 
+    void RecoverDiscussion() throws RemoteException;
+    
+    void RecoverJoinedDiscussion() throws RemoteException;
 }

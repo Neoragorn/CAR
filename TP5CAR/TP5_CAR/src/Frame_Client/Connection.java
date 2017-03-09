@@ -39,8 +39,8 @@ public class Connection extends JPanel implements ActionListener {
         JPanel p1 = new JPanel();
         p1.setLayout(null);
         p1.setOpaque(false);
-        TFPseudo = new JTextField("Neor");
-        TFPassword = new JPasswordField("123456789");
+        TFPseudo = new JTextField("soso");
+        TFPassword = new JPasswordField("123");
         TFPseudo.setBackground(new Color(255, 255, 255));
         TFPseudo.setForeground(new Color(0, 0, 0));
         TFPseudo.setBounds(150, 50, 200, 30);
