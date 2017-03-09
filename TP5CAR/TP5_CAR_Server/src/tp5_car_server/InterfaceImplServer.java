@@ -3,13 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp4_car;
+package tp5_car_server;
 
-import tp4_car_interface.InterfaceServer;
+import Models.User;
+import Persistence.UserBdd;
+import tp5_car_interface.InterfaceServer;
 import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import tp4_car_interface.InterfaceClient;
+import tp5_car_interface.InterfaceClient;
+
 
 /**
  *
@@ -32,14 +37,15 @@ public class InterfaceImplServer implements InterfaceServer {
     }
 
     @Override
-    public boolean Connect(String login, String mdp, InterfaceClient cl) throws RemoteException {
-        if (connectedCl.containsKey(login)) {
-            return false;
+    public User Connect(String login, String mdp, InterfaceClient cl) throws RemoteException, SQLException, NoSuchAlgorithmException {
+        User user = UserBdd.getUser(login, mdp);
+        if (user != null) {
+            System.out.println("Client connected : " + login);
+            NotifyAll(" s'est connecté", login, cl);
+            listClient.add(cl);
+            return user;
         }
-        System.out.println("Client connected : " + login);
-        NotifyAll(" s'est connecté", login, cl);
-        listClient.add(cl);
-        return true;
+        return null;
     }
 
     @Override

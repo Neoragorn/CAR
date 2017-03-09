@@ -3,9 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/m1miage/casier/NetBeansProjects/TP4_CAR/src/tp4_car/Server.java</file>
-            <file>file:/home/m1miage/casier/NetBeansProjects/TP4_CAR/src/tp4_car/TP4_CAR.java</file>
-            <file>file:/home/m1miage/casier/NetBeansProjects/TP4_CAR/src/tp4_car/InterfaceImplServer.java</file>
+            <file>file:/home/sofian/Bureau/M1_MIAGE/CAR/TP4CAR/TP4_CAR/test/tp4_car/InterfaceImplClient.java</file>
+            <file>file:/home/sofian/Bureau/M1_MIAGE/CAR/TP4CAR/TP4_CAR/test/tp4_car/InterfaceClient.java</file>
+            <file>file:/home/sofian/Bureau/M1_MIAGE/CAR/TP4CAR/TP4_CAR/test/tp4_car/InterfaceServer.java</file>
+            <file>file:/home/sofian/Bureau/M1_MIAGE/CAR/TP4CAR/TP4_CAR/test/tp4_car/Client.java</file>
+            <file>file:/home/sofian/Bureau/M1_MIAGE/CAR/TP4CAR/TP4_CAR/src/tp4_car/TP4_CAR.java</file>
+            <file>file:/home/sofian/Bureau/M1_MIAGE/CAR/TP4CAR/TP4_CAR/test/tp4_car/ServerTest.java</file>
         </group>
     </open-files>
 </project-private>

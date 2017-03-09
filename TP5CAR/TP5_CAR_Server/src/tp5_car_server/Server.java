@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp4_car;
+package tp5_car_server;
 
-import tp4_car_interface.InterfaceServer;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import tp5_car_interface.InterfaceServer;
 
 /**
  *
@@ -23,10 +23,12 @@ public class Server {
     public void start() throws RemoteException {
         InterfaceServer skeleton = (InterfaceServer) UnicastRemoteObject.exportObject(new InterfaceImplServer(), 4010);
         Registry registry = LocateRegistry.createRegistry(4010);        
-        registry.rebind("Add", skeleton);
+        registry.rebind("mini-chat", skeleton);
         System.out.println("Server created");
     }
 
     public Server() throws RemoteException {
     }
+    
+        
 }

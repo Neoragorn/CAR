@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp4_car;
+package tp5_car_server;
 
-import tp5_car_server.Server;
 import java.rmi.RemoteException;
 
 /**
  *
- * @author casier
+ * @author sofian
  */
-public class TP4_CAR {
+public class TP5_CAR_Server {
 
     /**
      * @param args the command line arguments
@@ -21,6 +20,5 @@ public class TP4_CAR {
         Server serveur = new Server();
         serveur.start();
     }
-   
-    
+
 }
