@@ -5,7 +5,6 @@
  */
 package Persistence;
 
-
 import Models.Category;
 import Models.Friend;
 import Models.Message;
@@ -64,16 +63,16 @@ public class UserBdd {
         ArrayList<User> userList = new ArrayList();
 
         String req = "Select idUser, pseudo, mail from User";
-    /*    String req = "Select idUser, pseudo, mail "
+        /*    String req = "Select idUser, pseudo, mail "
                 + "FROM User "
                 + "WHERE idUser not in "
                 + "(SELECT u.idUser "
                 + "FROM Friend f "
                 + "JOIN User u ON f.idFriend = u.idUser "
                 + "WHERE f.idUser = ?) AND idUser != ?";
-   */     PreparedStatement pss = conn.prepareStatement(req);
+         */ PreparedStatement pss = conn.prepareStatement(req);
 //        pss.setInt(1, UserBean.getInstance().getUser().getIdUser());
-  //      pss.setInt(2, UserBean.getInstance().getUser().getIdUser());
+        //      pss.setInt(2, UserBean.getInstance().getUser().getIdUser());
         ResultSet rs = pss.executeQuery();
         while (rs.next()) {
             User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
@@ -113,7 +112,7 @@ public class UserBdd {
         while (rs.next()) {
             Friend destinataire = findFriendById(rs.getInt(5));
 //            Message msg = new Message(rs.getString(3), UserBean.getInstance().getUser(), destinataire, rs.getDate(4));
-  //          privateMessage.add(msg);
+            //          privateMessage.add(msg);
         }
         return privateMessage;
     }
@@ -193,9 +192,9 @@ public class UserBdd {
     public static User getUser(String pseudo, String pwd) throws SQLException, NoSuchAlgorithmException {
         try {
             User user = new User();
+
             String req = "SELECT * FROM User WHERE pseudo = ? AND password = ? ";
             PreparedStatement pss = conn.prepareStatement(req);
-
             MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
             byte[] result = mDigest.digest(pwd.getBytes());
             StringBuilder sb = new StringBuilder();

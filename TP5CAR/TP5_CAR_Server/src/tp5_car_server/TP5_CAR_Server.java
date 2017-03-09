@@ -5,6 +5,7 @@
  */
 package tp5_car_server;
 
+import Persistence.PersistenceConnection;
 import java.rmi.RemoteException;
 
 /**
@@ -17,6 +18,13 @@ public class TP5_CAR_Server {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws RemoteException {
+
+        PersistenceConnection co = new PersistenceConnection();
+        try {
+            co.startConnection("casier", "C&?1+mur");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         Server serveur = new Server();
         serveur.start();
     }

@@ -2,12 +2,13 @@ package Models;
 
 import Persistence.UserCategoryVirtualProxy;
 import Persistence.UserMessageVirtualProxy;
+import java.io.Serializable;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import tp5_car_interface.InterfaceClient;
 import tp5_car_interface.InterfaceServer;
 
-public class User {
+public class User implements Serializable {
 
     protected String pseudo;
     protected String mail;

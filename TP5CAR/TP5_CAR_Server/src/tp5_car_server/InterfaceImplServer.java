@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import tp5_car_interface.InterfaceClient;
 
-
 /**
  *
  * @author casier
@@ -38,7 +37,9 @@ public class InterfaceImplServer implements InterfaceServer {
 
     @Override
     public User Connect(String login, String mdp, InterfaceClient cl) throws RemoteException, SQLException, NoSuchAlgorithmException {
+        System.out.println("Entered Connec");
         User user = UserBdd.getUser(login, mdp);
+        System.out.println("getuser done");
         if (user != null) {
             System.out.println("Client connected : " + login);
             NotifyAll(" s'est connecté", login, cl);
