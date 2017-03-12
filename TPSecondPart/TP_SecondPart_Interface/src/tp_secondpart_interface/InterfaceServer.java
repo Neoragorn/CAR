@@ -5,8 +5,11 @@
  */
 package tp_secondpart_interface;
 
+import Models.Message;
+import Models.MessageDiscussion;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,10 +19,12 @@ public interface InterfaceServer extends Remote {
 
     void Send(String message, String login,  InterfaceClient cl) throws RemoteException;
 
-    void NotifyAll(String msg, String login, InterfaceClient clOrigin) throws RemoteException;
+    void NotifyAll(String msg, String login, InterfaceClient clOrigin)  throws RemoteException;
 
     boolean Connect(String login, String mdp, InterfaceClient cl) throws RemoteException;
 
     void Disonnect(String login, InterfaceClient cl) throws RemoteException;
 
+    ArrayList<MessageDiscussion> recoverDiscussionMessage() throws RemoteException;
+    
 }

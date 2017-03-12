@@ -5,10 +5,13 @@
  */
 package tp_secondpart_server;
 
+import Models.MessageDiscussion;
 import Models.User;
+import Persistence.MessageDiscussionBdd;
 import Persistence.UserBdd;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +49,7 @@ public class InterfaceImplServer implements InterfaceServer {
             User user = UserBdd.getUser(login, mdp);
             mapClient.put(user, cl);
             System.out.println("Client connected : " + user.getPseudo());
-            NotifyAll(" s'est connecté", user.getPseudo(), cl);
+            //NotifyAll(" s'est connecté", user.getPseudo(), cl);
             return true;
         } catch (Exception ex) {
             Logger.getLogger(InterfaceImplServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,18 +61,37 @@ public class InterfaceImplServer implements InterfaceServer {
     public void Disonnect(String login, InterfaceClient cl) throws RemoteException {
         User userremove = null;
         for (User user : this.mapClient.keySet()) {
-            if (user.getPseudo().equals(login))
+            if (user.getPseudo().equals(login)) {
                 userremove = user;
+            }
         }
-        if (userremove != null)
+        if (userremove != null) {
             this.mapClient.remove(userremove);
+        }
         connectedCl.remove(login);
         listClient.remove(cl);
-        NotifyAll(" s'est déconnecté", login, cl);
+        // NotifyAll(" s'est déconnecté", login, cl);
     }
 
     @Override
     public void Send(String message, String login, InterfaceClient cl) throws RemoteException {
-        NotifyAll(message, login, cl);
+        User userremove = null;
+        for (User user : this.mapClient.keySet()) {
+            if (user.getPseudo().equals(login)) {
+                userremove = user;
+            }
+        }
+        if (userremove != null) {
+            java.sql.Date date = new java.sql.Date(0);
+            MessageDiscussion msg = new MessageDiscussion(message, userremove.getPseudo(), date);
+            MessageDiscussionBdd.insertMessageIntoDiscussion(msg, userremove);
+        }
+        //NotifyAll(message, login, cl);
+    }
+
+    @Override
+    public ArrayList<MessageDiscussion> recoverDiscussionMessage() throws RemoteException {
+        ArrayList<MessageDiscussion> listmsg = MessageDiscussionBdd.getPastMessageFromDiscussion();
+        return listmsg;
     }
 }

@@ -5,13 +5,14 @@
  */
 package tp_secondpart_client;
 
+import Models.MessageDiscussion;
 import tp_secondpart_interface.InterfaceClient;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import tp_secondpart_interface.InterfaceServer;
 
@@ -39,6 +40,12 @@ public class Client {
                 System.out.println("Erreur, ce login est déjà conecté. Recommencez.");
             } else {
                 System.out.println("Vous êtes connecté !");
+            }
+        }
+        ArrayList<MessageDiscussion> listmgs = stub.recoverDiscussionMessage();
+        if (!listmgs.isEmpty()) {
+            for (MessageDiscussion msg : listmgs) {
+                System.out.println(msg.getTime() + " | " + msg.getAuteur() + ": " + msg.getMessage());
             }
         }
         String str = "";
