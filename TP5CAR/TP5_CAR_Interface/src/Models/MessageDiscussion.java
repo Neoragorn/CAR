@@ -5,13 +5,14 @@
  */
 package Models;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 /**
  *
  * @author sofian
  */
-public class MessageDiscussion {
+public class MessageDiscussion implements Serializable {
 
     private int idMessage;
     private String message;

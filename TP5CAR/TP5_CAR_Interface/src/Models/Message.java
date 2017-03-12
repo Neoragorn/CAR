@@ -5,13 +5,14 @@
  */
 package Models;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 /**
  *               Strign message = ;
  * @author sofian
  */
-public class Message {
+public class Message implements Serializable {
 
     private String message;
     private User auteur;

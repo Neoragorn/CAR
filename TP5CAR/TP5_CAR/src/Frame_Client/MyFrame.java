@@ -82,4 +82,6 @@ public class MyFrame extends JPanel {
     public void quit() {
         frame.dispose();
     }
+    
+    
 }

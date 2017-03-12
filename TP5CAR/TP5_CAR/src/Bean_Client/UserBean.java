@@ -182,7 +182,7 @@ public class UserBean {
 
     public void sendMessage(Message message) {
         try {
-            MessageBdd.insertMessage(message);
+            this.user.getStub().sendMessage(message);
         } catch (Exception err) {
             System.out.println(err);
         }

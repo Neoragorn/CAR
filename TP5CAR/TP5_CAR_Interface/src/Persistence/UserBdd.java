@@ -59,6 +59,17 @@ public class UserBdd {
         pss.executeUpdate();
     }
 
+    public static User getUserById(int id) throws SQLException {
+
+        String req = "Select idUser, pseudo, mail from User where idUser = ?";
+        PreparedStatement pss = conn.prepareStatement(req);
+        pss.setInt(1, id);
+        ResultSet rs = pss.executeQuery();
+        rs.next();
+        User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
+        return user;
+    }
+
     public static ArrayList<User> getAllUser() throws SQLException {
         ArrayList<User> userList = new ArrayList();
 
@@ -111,8 +122,8 @@ public class UserBdd {
         ResultSet rs = pss.executeQuery();
         while (rs.next()) {
             Friend destinataire = findFriendById(rs.getInt(5));
-//            Message msg = new Message(rs.getString(3), UserBean.getInstance().getUser(), destinataire, rs.getDate(4));
-            //          privateMessage.add(msg);
+            Message msg = new Message(rs.getString(3), getUserById(id), destinataire, rs.getDate(4));
+            privateMessage.add(msg);
         }
         return privateMessage;
     }

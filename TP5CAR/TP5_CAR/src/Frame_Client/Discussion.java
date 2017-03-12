@@ -12,8 +12,11 @@ import Models.User;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -35,7 +38,7 @@ public class Discussion extends JPanel implements ActionListener, ListSelectionL
 
     private DefaultListModel listMembers;
 
-    private JEditorPane discussionField;
+    private JTextField discussionField;
     private JList members;
 
     private JButton returnHome;
@@ -130,8 +133,9 @@ public class Discussion extends JPanel implements ActionListener, ListSelectionL
         members.addListSelectionListener(this);
         members.setVisibleRowCount(5);
 
-        discussionField = new JEditorPane();
+        discussionField = new JTextField();
         discussionField.setBounds(30, 50, 800, 600);
+        discussionField.addActionListener(this);
 
         try {
             Document doc = discussionField.getDocument();
@@ -175,8 +179,7 @@ public class Discussion extends JPanel implements ActionListener, ListSelectionL
             } catch (Exception err) {
                 System.out.println(err);
             }
-        }
-        if (e.getActionCommand().equals("Leave Discussion") && !DiscussionGroupBean.getInstance().isModerator()) {
+        } else if (e.getActionCommand().equals("Leave Discussion") && !DiscussionGroupBean.getInstance().isModerator()) {
             try {
                 DiscussionGroupBean.getInstance().destroyUserFromDiscussion(UserBean.getInstance().getUser());
                 MyFrame.getInstance().changeFrame(new Home());
@@ -184,8 +187,7 @@ public class Discussion extends JPanel implements ActionListener, ListSelectionL
                 System.out.println(err);
             }
 
-        }
-        if (e.getActionCommand().equals("Add Message")) {
+        } else if (e.getActionCommand().equals("Add Message")) {
             try {
                 String messageToAdd = TFMessage.getText();
                 java.util.Date d1 = new java.util.Date();
@@ -193,9 +195,16 @@ public class Discussion extends JPanel implements ActionListener, ListSelectionL
                 MessageDiscussion msg = new MessageDiscussion(messageToAdd, UserBean.getInstance().getUser().getPseudo(), d2);
                 DiscussionGroupBean.getInstance().addMessageToDiscussion(DiscussionGroupBean.getInstance().getDiscussion(), msg, UserBean.getInstance().getUser());
                 DiscussionGroupBean.getInstance().getDiscussion().getMessagesProxy().updateMessage(DiscussionGroupBean.getInstance().getDiscussion());
+                UserBean.getInstance().getUser().getStub().changeFrameDiscussion(DiscussionGroupBean.getInstance().getDiscussion().getMembers().getUsers());
                 MyFrame.getInstance().changeFrame(new Discussion());
             } catch (Exception err) {
                 System.out.println(err);
+            }
+        } else {
+            try {
+                UserBean.getInstance().getUser().getStub().changeFrameDiscussion(DiscussionGroupBean.getInstance().getDiscussion().getMembers().getUsers());
+            } catch (RemoteException ex) {
+                Logger.getLogger(Discussion.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

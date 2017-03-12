@@ -5,8 +5,12 @@
  */
 package tp5_car_interface;
 
+import Models.DiscussionGroup;
+import Models.MessageDiscussion;
+import Models.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,4 +25,12 @@ public interface InterfaceClient extends Remote {
     void RecoverDiscussion() throws RemoteException;
     
     void RecoverJoinedDiscussion() throws RemoteException;
+    
+    void addMessageToDiscussion(DiscussionGroup discussion, MessageDiscussion message, User user) throws RemoteException;
+    
+    void createDiscussion(User user, String title, String description) throws RemoteException;
+    
+    void getMessageUser(int id) throws RemoteException;
+    
+    void orderNewFrameDiscussion() throws RemoteException;
 }

@@ -7,8 +7,14 @@ package tp5_car_client;
 
 import Bean_Client.DiscussionGroupBean;
 import Bean_Client.UserBean;
+import Frame_Client.Discussion;
+import Frame_Client.MyFrame;
+import Models.DiscussionGroup;
+import Models.MessageDiscussion;
+import Models.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import tp5_car_interface.InterfaceClient;
 
 /**
@@ -35,28 +41,25 @@ public class InterfaceImplClient extends UnicastRemoteObject implements Interfac
     public void RecoverJoinedDiscussion() throws RemoteException {
         DiscussionGroupBean.getInstance().setJoinedDiscussionGroup(UserBean.getInstance().getUser().getStub().giveJoinedDiscussion(UserBean.getInstance().getUser()));
     }
-    
-    /*    public void addMessageToDiscussion(DiscussionGroup discussion, MessageDiscussion message, User user) throws SQLException {
-        MessageDiscussionBdd.insertMessageIntoDiscussion(discussion, message, user);
+
+    @Override
+    public void addMessageToDiscussion(DiscussionGroup discussion, MessageDiscussion message, User user) throws RemoteException {
+        UserBean.getInstance().getUser().getStub().sendMessageDiscussion(discussion, message, user);
     }
 
-    public void createDiscussion(User user, String title, String description) throws SQLException {
-        DiscussionGroupBdd.createDiscussionGroupBdd(user.getIdUser(), title, description);
+    @Override
+    public void createDiscussion(User user, String title, String description) throws RemoteException {
+        UserBean.getInstance().getUser().getStub().createNewDiscussion(user, title, description);
     }
 
-    public void recoverNotJoinedDiscussionGroups(User user) throws SQLException {
-        try {
-            this.notJoinedDiscussionGroup = DiscussionGroupBdd.getNotJoinedDiscussionGroupBdd(user);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+    @Override
+    public void getMessageUser(int id) throws RemoteException {
+        UserBean.getInstance().getUser().getStub().recoverMessageUser(id);
     }
 
-    public void recoverJoinedDiscussionGroups(User user) throws SQLException {
-        try {
-            this.joinedDiscussionGroup = DiscussionGroupBdd.getJoinedDiscussionGroupBdd(user);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    } */
+    @Override
+    public void orderNewFrameDiscussion() throws RemoteException {
+        System.out.println("Order NED FRAME");
+        MyFrame.getInstance().changeFrame(new Discussion());
+    }
 }

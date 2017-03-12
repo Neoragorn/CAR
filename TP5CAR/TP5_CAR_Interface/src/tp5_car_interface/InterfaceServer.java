@@ -6,6 +6,8 @@
 package tp5_car_interface;
 
 import Models.DiscussionGroup;
+import Models.Message;
+import Models.MessageDiscussion;
 import Models.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
  */
 public interface InterfaceServer extends Remote {
 
-    void Send(String message, String login,  InterfaceClient cl) throws RemoteException;
+    void Send(String message, String login, InterfaceClient cl) throws RemoteException;
 
     void NotifyAll(String msg, String login, InterfaceClient clOrigin) throws RemoteException;
 
@@ -27,7 +29,17 @@ public interface InterfaceServer extends Remote {
 
     void Disonnect(String login, InterfaceClient cl) throws RemoteException;
 
-    ArrayList<DiscussionGroup> giveDiscussion(User user) throws RemoteException; 
-    
+    ArrayList<DiscussionGroup> giveDiscussion(User user) throws RemoteException;
+
     ArrayList<DiscussionGroup> giveJoinedDiscussion(User user) throws RemoteException;
+
+    void sendMessageDiscussion(DiscussionGroup discussion, MessageDiscussion message, User user) throws RemoteException;
+    
+    void createNewDiscussion(User user, String title, String description) throws RemoteException;    
+
+    void sendMessage(Message msg) throws RemoteException, SQLException;
+            
+    ArrayList<Message> recoverMessageUser(int id) throws RemoteException;
+    
+    void changeFrameDiscussion(ArrayList<User> users) throws RemoteException;
 }

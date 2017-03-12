@@ -5,11 +5,13 @@
  */
 package Models;
 
+import java.io.Serializable;
+
 /**
  *
  * @author sofian
  */
-public class Friend {
+public class Friend implements Serializable {
 
     private int idFriend;
     private String pseudo;

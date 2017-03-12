@@ -154,8 +154,10 @@ public class Home extends JPanel implements ActionListener, ListSelectionListene
         listSearchCategoryResult = new DefaultListModel();
 
         try {
-            ArrayList<Message> privateMsg = UserBean.getInstance().getUser().getProxyMessage().initialize();
+            ArrayList<Message> privateMsg = UserBean.getInstance().getUser().getStub().recoverMessageUser(UserBean.getInstance().getUser().getIdUser());
+            System.out.println("entered private message reciovering");
             for (Message msg : privateMsg) {
+                System.out.println(msg.getMessage());
                 boiteReception.addElement("[" + msg.getDate() + "] " + msg.getDestinataire().getPseudo() + " : " + msg.getMessage());
             }
         } catch (Exception e) {
@@ -180,6 +182,7 @@ public class Home extends JPanel implements ActionListener, ListSelectionListene
             System.out.println(e);
         }
 
+        //A modifier
         listFriend = new DefaultListModel();
         ArrayList<Friend> userFriends = UserBean.getInstance().getUser().getFriends();
         for (Friend friend : userFriends) {
