@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp4_car;
+package tp_secondpart_client;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

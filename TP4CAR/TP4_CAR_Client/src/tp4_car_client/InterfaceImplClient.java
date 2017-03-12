@@ -7,7 +7,7 @@ package tp4_car_client;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import tp4_car_interface.InterfaceClient;
+import tp_secondpart_interface.InterfaceClient;
 
 /**
  *

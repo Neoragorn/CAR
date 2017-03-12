@@ -5,13 +5,13 @@
  */
 package tp4_car;
 
-import tp4_car_interface.InterfaceClient;
+import tp_secondpart_interface.InterfaceClient;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
-import tp4_car_interface.InterfaceServer;
+import tp_secondpart_interface.InterfaceServer;
 
 /**
  *

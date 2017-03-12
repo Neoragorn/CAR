@@ -3,29 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp4_car_client;
+package tp_secondpart_client;
 
 import tp_secondpart_interface.InterfaceClient;
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 import tp_secondpart_interface.InterfaceServer;
-import tp4_car_interface.Message;
 
 /**
  *
  * @author casier
  */
 public class Client {
-    
+
     private String login = "";
-    
-    public Client() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(4010);
-        InterfaceServer stub = (InterfaceServer) registry.lookup("Add");
+
+    public Client() throws RemoteException, NotBoundException, NoSuchAlgorithmException {
+        Registry registry = LocateRegistry.getRegistry(4020);
+        InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
         InterfaceClient clInter = new InterfaceImplClient();
         Scanner sc = new Scanner(System.in);
         boolean connected = false;
@@ -52,6 +52,6 @@ public class Client {
                 stub.Send(str, login, clInter);
             }
         }
-        
+
     }
 }

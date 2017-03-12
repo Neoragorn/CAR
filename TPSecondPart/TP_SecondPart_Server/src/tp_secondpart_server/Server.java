@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tp4_car;
+package tp_secondpart_server;
 
 import tp_secondpart_interface.InterfaceServer;
 import java.rmi.RemoteException;
@@ -21,9 +21,9 @@ public class Server {
     private Registry registry;
 
     public void start() throws RemoteException {
-        InterfaceServer skeleton = (InterfaceServer) UnicastRemoteObject.exportObject(new InterfaceImplServer(), 4010);
-        Registry registry = LocateRegistry.createRegistry(4010);        
-        registry.rebind("Add", skeleton);
+        InterfaceServer skeleton = (InterfaceServer) UnicastRemoteObject.exportObject(new InterfaceImplServer(), 4020);
+        Registry registry = LocateRegistry.createRegistry(4020);        
+        registry.rebind("mini-chat", skeleton);
         System.out.println("Server created");
     }
 
