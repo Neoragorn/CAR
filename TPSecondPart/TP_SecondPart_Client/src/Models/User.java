@@ -1,7 +1,6 @@
 package Models;
 
-import Persistence.UserCategoryVirtualProxy;
-import Persistence.UserMessageVirtualProxy;
+
 import java.io.Serializable;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;

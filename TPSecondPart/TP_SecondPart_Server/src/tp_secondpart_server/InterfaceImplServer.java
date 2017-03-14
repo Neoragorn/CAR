@@ -11,7 +11,6 @@ import Persistence.MessageDiscussionBdd;
 import Persistence.UserBdd;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,8 +34,13 @@ public class InterfaceImplServer implements InterfaceServer {
 
     @Override
     public void NotifyAll(String msg, String login, InterfaceClient clOrigin) throws RemoteException {
-        for (InterfaceClient cl : listClient) {
-            cl.Receive(login, msg);
+        for (User user : this.mapClient.keySet()) {
+            System.out.println("user is +> " + user.getPseudo());
+            if (user.getClInter() != null) {
+                System.out.println("He has an interfaceclient ! ");
+                InterfaceClient cl = user.getClInter();
+                cl.Receive(login, msg);
+            }
         }
     }
 
@@ -47,9 +51,10 @@ public class InterfaceImplServer implements InterfaceServer {
         }
         try {
             User user = UserBdd.getUser(login, mdp);
+            user.setClInter(cl);;
             mapClient.put(user, cl);
             System.out.println("Client connected : " + user.getPseudo());
-            //NotifyAll(" s'est connecté", user.getPseudo(), cl);
+            NotifyAll(" s'est connecté", user.getPseudo(), cl);
             return true;
         } catch (Exception ex) {
             Logger.getLogger(InterfaceImplServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +75,7 @@ public class InterfaceImplServer implements InterfaceServer {
         }
         connectedCl.remove(login);
         listClient.remove(cl);
-        // NotifyAll(" s'est déconnecté", login, cl);
+        NotifyAll(" s'est déconnecté", login, cl);
     }
 
     @Override
@@ -78,6 +83,7 @@ public class InterfaceImplServer implements InterfaceServer {
         User userremove = null;
         for (User user : this.mapClient.keySet()) {
             if (user.getPseudo().equals(login)) {
+                System.out.println("User is => " + user.getPseudo());
                 userremove = user;
             }
         }
@@ -86,7 +92,7 @@ public class InterfaceImplServer implements InterfaceServer {
             MessageDiscussion msg = new MessageDiscussion(message, userremove.getPseudo(), date);
             MessageDiscussionBdd.insertMessageIntoDiscussion(msg, userremove);
         }
-        //NotifyAll(message, login, cl);
+        NotifyAll(message, login, cl);
     }
 
     @Override

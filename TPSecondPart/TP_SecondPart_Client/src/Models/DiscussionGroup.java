@@ -6,8 +6,6 @@
 package Models;
 
 
-import Persistence.MessageDiscussionGroupVirtualProxy;
-import Persistence.UserDiscussionGroupVirtualProxy;
 import java.io.Serializable;
 
 /**

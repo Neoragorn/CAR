@@ -5,7 +5,6 @@
  */
 package tp_secondpart_interface;
 
-import Models.Message;
 import Models.MessageDiscussion;
 import java.rmi.Remote;
 import java.rmi.RemoteException;

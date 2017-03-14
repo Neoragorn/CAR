@@ -3,10 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Persistence;
+package Models;
 
-import Models.Message;
-import java.awt.List;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
