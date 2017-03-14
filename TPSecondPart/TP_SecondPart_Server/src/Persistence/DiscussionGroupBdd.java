@@ -122,7 +122,7 @@ public class DiscussionGroupBdd {
         return null;
     }
     
-    public static ArrayList<User> getDiscussionGroupUserById(int id) throws SQLException {
+    public static ArrayList<User> getDiscussionGroupUserById(int id) {
         try {
             ArrayList<User> users = new ArrayList();
 

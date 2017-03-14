@@ -6,16 +6,23 @@
 package Frame;
 
 import Bean.UserBean;
+import static Frame.Connection.Pseudo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import tp_secondpart_client.Client;
 
 /**
  *
@@ -64,17 +71,22 @@ public class WrongLoginPwd extends JPanel implements ActionListener {
 
     }
 
+     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Connect")) {
-            Pseudo = TFPseudo.getText();
-            Password = TFPassword.getText();
-            if (UserBean.getInstance().connectUser(Pseudo, Password)) {
-                Home home = new Home();
-                MyFrame.getInstance().getFrame().dispose();
-                MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
-                MyFrame.getInstance().changeFrame(home);
-            } else {
-                MyFrame.getInstance().changeFrame(new WrongLoginPwd());
+            try {
+                Pseudo = TFPseudo.getText();
+                Password = TFPassword.getText();
+                if (Client.getInstance().isConnected()) {
+                    Home home = new Home();
+                    MyFrame.getInstance().getFrame().dispose();
+                    MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
+                    MyFrame.getInstance().changeFrame(home);
+                } else {
+                    MyFrame.getInstance().changeFrame(new WrongLoginPwd());
+                }
+            } catch (RemoteException | NotBoundException | NoSuchAlgorithmException ex) {
+                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

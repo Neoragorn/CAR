@@ -14,8 +14,6 @@ import java.rmi.RemoteException;
  */
 public interface InterfaceClient extends Remote {
 
-//    void Receive(Message message);
-
     void Receive(String login, String message) throws RemoteException;
 
 }

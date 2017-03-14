@@ -17,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -110,22 +112,27 @@ public class UserBdd {
         return privateMessage;
     }
 
-    public static ArrayList<Message> getPrivateMessageById(int id) throws SQLException {
-        ArrayList<Message> privateMessage = new ArrayList();
-        String req = "select userEnvoi.pseudo, userRecoi.pseudo, pm.message, date, pm.idAuteur FROM PrivateMessage pm "
-                + "join User userEnvoi on pm.idAuteur = userEnvoi.idUser "
-                + "join User userRecoi on pm.idDestinataire = userRecoi.idUser "
-                + "WHERE pm.idDestinataire = ? "
-                + "ORDER by pm.date DESC";
-        PreparedStatement pss = conn.prepareStatement(req);
-        pss.setInt(1, id);
-        ResultSet rs = pss.executeQuery();
-        while (rs.next()) {
-            Friend destinataire = findFriendById(rs.getInt(5));
-            Message msg = new Message(rs.getString(3), getUserById(id), destinataire, rs.getDate(4));
-            privateMessage.add(msg);
+    public static ArrayList<Message> getPrivateMessageById(int id) {
+        try {
+            ArrayList<Message> privateMessage = new ArrayList();
+            String req = "select userEnvoi.pseudo, userRecoi.pseudo, pm.message, date, pm.idAuteur FROM PrivateMessage pm "
+                    + "join User userEnvoi on pm.idAuteur = userEnvoi.idUser "
+                    + "join User userRecoi on pm.idDestinataire = userRecoi.idUser "
+                    + "WHERE pm.idDestinataire = ? "
+                    + "ORDER by pm.date DESC";
+            PreparedStatement pss = conn.prepareStatement(req);
+            pss.setInt(1, id);
+            ResultSet rs = pss.executeQuery();
+            while (rs.next()) {
+                Friend destinataire = findFriendById(rs.getInt(5));
+                Message msg = new Message(rs.getString(3), getUserById(id), destinataire, rs.getDate(4));
+                privateMessage.add(msg);
+            }
+            return privateMessage;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserBdd.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return privateMessage;
     }
 
     public static Friend findFriendById(int id) throws SQLException {

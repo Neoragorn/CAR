@@ -5,12 +5,8 @@
  */
 package Models;
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import tp_secondpart_client.Client;
 
 /**
  *
@@ -23,15 +19,15 @@ public class MessageDiscussionGroupVirtualProxy extends ArrayList<MessageDiscuss
     public MessageDiscussionGroupVirtualProxy() {
     }
 
-    public ArrayList<MessageDiscussion> initialize(DiscussionGroup discussion) throws SQLException, RemoteException, NotBoundException, NoSuchAlgorithmException {
+    public ArrayList<MessageDiscussion> initialize(DiscussionGroup discussion) throws SQLException {
         if (messages.isEmpty()) {
-            this.messages = Client.getInstance().getUser().getStub().recoverDiscussionMessage();
+           // this.messages = MessageDiscussionBdd.getMessageFromDiscussion(discussion);
         }
         return this.messages;
     }
 
-    public void updateMessage(DiscussionGroup discussion) throws SQLException, RemoteException, NotBoundException, NoSuchAlgorithmException {
-        this.messages = Client.getInstance().getUser().getStub().getMessageFromDiscussion(discussion);
+    public void updateMessage(DiscussionGroup discussion) throws SQLException {
+       // this.messages = MessageDiscussionBdd.getMessageFromDiscussion(discussion);
     }
 
     public ArrayList<MessageDiscussion> getMessages() {
@@ -42,5 +38,4 @@ public class MessageDiscussionGroupVirtualProxy extends ArrayList<MessageDiscuss
         this.messages = messages;
     }
 
-    
 }

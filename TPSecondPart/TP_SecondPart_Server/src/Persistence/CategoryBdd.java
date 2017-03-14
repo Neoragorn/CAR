@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,18 +24,23 @@ public class CategoryBdd {
 
     private static final Connection conn = PersistenceConnection.getInstance().getConn();
 
-    public static ArrayList<Category> getCategoryByUserId(int id) throws SQLException {
+    public static ArrayList<Category> getCategoryByUserId(int id) {
         ArrayList<Category> categories = new ArrayList();
         String req = "select cat.idCategorie, nom FROM CategorieUser cat "
                 + "join AssoCategorieUser catAsso on cat.idCategorie = catAsso.idCategorie "
                 + "join User user on catAsso.idUser = user.idUser "
                 + "WHERE user.idUser = ? ";
-        PreparedStatement pss = conn.prepareStatement(req);
-        pss.setInt(1, id);
-        ResultSet rs = pss.executeQuery();
-        while (rs.next()) {
-            Category cat = new Category(rs.getInt(1), rs.getString(2));
-            categories.add(cat);
+        PreparedStatement pss;
+        try {
+            pss = conn.prepareStatement(req);
+            pss.setInt(1, id);
+            ResultSet rs = pss.executeQuery();
+            while (rs.next()) {
+                Category cat = new Category(rs.getInt(1), rs.getString(2));
+                categories.add(cat);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryBdd.class.getName()).log(Level.SEVERE, null, ex);
         }
         return categories;
     }
@@ -66,19 +73,18 @@ public class CategoryBdd {
     }
 
     public static void deleteUserFromCategorie(User user, Category cat) throws SQLException {
-        try
-        {
-        String req = "DELETE FROM AssoCategorieUser where idUser = ? AND idCategorie = ?";
-        PreparedStatement pss = conn.prepareStatement(req);
-        pss.setInt(1, user.getIdUser());
-        pss.setInt(2, cat.getIdCategory());
-        pss.executeUpdate();
+        try {
+            String req = "DELETE FROM AssoCategorieUser where idUser = ? AND idCategorie = ?";
+            PreparedStatement pss = conn.prepareStatement(req);
+            pss.setInt(1, user.getIdUser());
+            pss.setInt(2, cat.getIdCategory());
+            pss.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
         }
     }
-    
-        public static Category getCategoryByName(String category) throws SQLException, NoSuchAlgorithmException {
+
+    public static Category getCategoryByName(String category) throws SQLException, NoSuchAlgorithmException {
         try {
             if (category.isEmpty()) {
                 return null;
@@ -90,7 +96,7 @@ public class CategoryBdd {
             ResultSet rs = pss.executeQuery();
             rs.next();
             Category cat = new Category(rs.getInt(1), rs.getString(2));
-            return cat;            
+            return cat;
         } catch (SQLException e) {
             System.out.println(e);
             return null;

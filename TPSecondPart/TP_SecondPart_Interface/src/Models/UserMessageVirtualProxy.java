@@ -6,12 +6,8 @@
 package Models;
 
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import tp_secondpart_client.Client;
 
 /**
  *
@@ -26,11 +22,11 @@ public class UserMessageVirtualProxy extends ArrayList<Message> {
         this.id = id;
     }
 
-    public ArrayList<Message> initialize() throws SQLException, RemoteException, NotBoundException, NoSuchAlgorithmException
+    public ArrayList<Message> initialize() throws SQLException
     {
         if (this.messages.isEmpty())
         {
-           messages = Client.getInstance().getUser().getStub().getMessageUser(id);
+           // messages = UserBdd.getPrivateMessageById(this.id);            
         }
         return messages;
     }

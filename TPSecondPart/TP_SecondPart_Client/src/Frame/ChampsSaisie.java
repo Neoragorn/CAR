@@ -1,13 +1,10 @@
 package Frame;
 
 import Bean.UserBean;
-import Models.User;
-import Persistence.UserBdd;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;

@@ -5,12 +5,8 @@
  */
 package Models;
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import tp_secondpart_client.Client;
 
 /**
  *
@@ -25,9 +21,9 @@ public class UserCategoryVirtualProxy extends ArrayList<Category> {
         this.id = id;
     }
 
-    public ArrayList<Category> initialize() throws SQLException, RemoteException, NotBoundException, NoSuchAlgorithmException {
+    public ArrayList<Category> initialize() throws SQLException {
         if (categories.isEmpty()) {
-            categories = Client.getInstance().getUser().getStub().getCategoryUser(id);
+           // categories = CategoryBdd.getCategoryByUserId(id);
         }
         return categories;
     }

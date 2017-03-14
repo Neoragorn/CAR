@@ -6,6 +6,7 @@
 package tp_secondpart_client;
 
 import Models.MessageDiscussion;
+import Models.User;
 import tp_secondpart_interface.InterfaceClient;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -23,19 +24,30 @@ import tp_secondpart_interface.InterfaceServer;
 public class Client {
 
     private String login = "";
-
+    private User user = null;
+    private static Client inst;
+    private boolean connected = false;
+    
+    
+    static public Client getInstance() throws RemoteException, NotBoundException, NoSuchAlgorithmException {
+        if (inst == null) {
+            inst = new Client();
+        }
+        return inst;
+    }
+    
     public Client() throws RemoteException, NotBoundException, NoSuchAlgorithmException {
         Registry registry = LocateRegistry.getRegistry(4020);
         InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
         InterfaceClient clInter = new InterfaceImplClient();
         Scanner sc = new Scanner(System.in);
-        boolean connected = false;
         while (!connected) {
             System.out.println("Choisissez un login");
             this.login = sc.nextLine();
             System.out.println("Choisissez un mot de passe");
             String pwd = sc.nextLine();
             connected = stub.Connect(login, pwd, clInter);
+            this.user = stub.createUser();
             if (!connected) {
                 System.out.println("Erreur, ce login est déjà conecté. Recommencez.");
             } else {
@@ -59,6 +71,39 @@ public class Client {
                 stub.Send(str, login, clInter);
             }
         }
-
     }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public static Client getInst() {
+        return inst;
+    }
+
+    public static void setInst(Client inst) {
+        Client.inst = inst;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+    
+    
 }
