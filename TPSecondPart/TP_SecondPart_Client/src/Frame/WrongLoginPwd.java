@@ -63,7 +63,7 @@ public class WrongLoginPwd extends JPanel implements ActionListener {
         boutonConnection.setBounds(150, 180, 150, 20);
         boutonConnection.addActionListener(this);
 
-        wrongMessage = new JLabel("Wrong login or/and password. Try again");
+        wrongMessage = new JLabel("Wrong login or/and password or user already connected. Try again");
         wrongMessage.setOpaque(true);
         wrongMessage.setBounds(150, 150, 300, 20);
 
@@ -82,16 +82,16 @@ public class WrongLoginPwd extends JPanel implements ActionListener {
             try {
                 Pseudo = TFPseudo.getText();
                 Password = TFPassword.getText();
-                Registry registry = LocateRegistry.getRegistry(4020);
+                Registry registry = LocateRegistry.getRegistry(4021);
                 InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
                 InterfaceClient clInter = new InterfaceImplClient();
                 Client.getInstance().setConnected(stub.Connect(Pseudo, Password, clInter));
                 if (Client.getInstance().isConnected()) {
                     Home home = new Home();
-                    MyFrame.getInstance().getFrame().dispose();
+//                    MyFrame.getInstance().getFrame().dispose();
                     Client.getInstance().getUser().getStub().Send(" s'est connecté", Client.getInstance().getUser().getPseudo(), clInter);
-                    MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
-                    MyFrame.getInstance().changeFrame(home);
+  //                  MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
+    //                MyFrame.getInstance().changeFrame(home);
                 } else {
                     MyFrame.getInstance().changeFrame(new WrongLoginPwd());
                 }

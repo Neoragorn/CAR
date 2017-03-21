@@ -1,6 +1,5 @@
 package Frame;
 
-import static Frame.Connection.Pseudo;
 import Models.MessageDiscussion;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -107,11 +106,12 @@ public class Home extends JPanel implements ActionListener, ListSelectionListene
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Quit")) {
             try {
-                Client.getInstance().getUser().getStub().Send(" s'est déconnecté", Client.getInstance().getUser().getPseudo(), Client.getInstance().getUser().getClInter());
+                Client.getInstance().getUser().getStub().Disonnect(Client.getInstance().getUser().getPseudo(), Client.getInstance().getUser().getClInter());
             } catch (RemoteException | NotBoundException | NoSuchAlgorithmException ex) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
             }
             MyFrame.getInstance().quit();
+            System.exit(0);
             try {
                 Client.getInstance().getMyThread().stopThread();
             } catch (RemoteException | NotBoundException | NoSuchAlgorithmException ex) {

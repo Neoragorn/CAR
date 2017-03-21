@@ -38,6 +38,12 @@ public class InterfaceImplServer implements InterfaceServer {
         super();
     }
 
+    public void displayMap() {
+        for (User user : this.mapClient.keySet()) {
+            System.out.println("user connected : " + user.getPseudo());
+        }
+    }
+
     @Override
     public User createUser() throws RemoteException {
 
@@ -58,14 +64,18 @@ public class InterfaceImplServer implements InterfaceServer {
 
     @Override
     public boolean Connect(String login, String mdp, InterfaceClient cl) throws RemoteException {
-        if (connectedCl.containsKey(login)) {
-            return false;
+        for (User user : this.mapClient.keySet()) {
+            if (user.getPseudo().equals(login)) {
+                System.out.println("the user is already connected in the map");
+                return false;
+            }
         }
         try {
             User user = UserBdd.getUser(login, mdp);
             user.setClInter(cl);;
             mapClient.put(user, cl);
             this.user = user;
+            displayMap();
             return true;
         } catch (Exception ex) {
             Logger.getLogger(InterfaceImplServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -75,18 +85,24 @@ public class InterfaceImplServer implements InterfaceServer {
 
     @Override
     public void Disonnect(String login, InterfaceClient cl) throws RemoteException {
+        System.out.println("ENTERED IN DISCONNECT");
         User userremove = null;
+        NotifyAll(" s'est déconnecté", login, cl);
         for (User user : this.mapClient.keySet()) {
+            System.out.println("login is " + login);
+            System.out.println("User login is " + user.getPseudo());
             if (user.getPseudo().equals(login)) {
+                System.out.println("found the user to disconect => " + user.getPseudo());
                 userremove = user;
             }
         }
         if (userremove != null) {
+            System.out.println("removed ! ");
             this.mapClient.remove(userremove);
         }
+        displayMap();
         connectedCl.remove(login);
         listClient.remove(cl);
-        NotifyAll(" s'est déconnecté", login, cl);
     }
 
     @Override

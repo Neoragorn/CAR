@@ -21,8 +21,8 @@ public class Server {
     private Registry registry;
 
     public void start() throws RemoteException {
-        InterfaceServer skeleton = (InterfaceServer) UnicastRemoteObject.exportObject(new InterfaceImplServer(), 4020);
-        Registry registry = LocateRegistry.createRegistry(4020);        
+        InterfaceServer skeleton = (InterfaceServer) UnicastRemoteObject.exportObject(new InterfaceImplServer(), 4021);
+        Registry registry = LocateRegistry.createRegistry(4021);        
         registry.rebind("mini-chat", skeleton);
         System.out.println("Server created");
     }

@@ -23,7 +23,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import tp_secondpart_client.Client;
 import tp_secondpart_client.InterfaceImplClient;
-import tp_secondpart_client.MyThread;
 import tp_secondpart_interface.InterfaceClient;
 import tp_secondpart_interface.InterfaceServer;
 
@@ -68,26 +67,26 @@ public class Connection extends JPanel implements ActionListener {
             try {
                 Pseudo = TFPseudo.getText();
                 Password = TFPassword.getText();
-                Registry registry = LocateRegistry.getRegistry(4020);
+                Registry registry = LocateRegistry.getRegistry(4021);
                 InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
                 InterfaceClient clInter = new InterfaceImplClient();
+                MyFrame.getInstance().getFrame().dispose();
                 Client.getInstance().setConnected(stub.Connect(Pseudo, Password, clInter));
                 if (Client.getInstance().isConnected()) {
                     Client.getInstance().setUser(stub.createUser());
                     Client.getInstance().getUser().setRegistry(registry);
                     Client.getInstance().getUser().setStub(stub);
+                    MyFrame.getInstance().quit();
+                    MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
+                    MyFrame.getInstance().changeFrame(new Home());
                     Client.getInstance().getUser().getStub().Send(" s'est connecté", Client.getInstance().getUser().getPseudo(), clInter);
-                    Home home = new Home();
                     if (!Client.getInstance().getMyThread().isRunning()) {
                         Client.getInstance().getMyThread().start();
                     }
-                    MyFrame.getInstance().quit();
-                    MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
-                    MyFrame.getInstance().changeFrame(home);
                 } else {
                     MyFrame.getInstance().changeFrame(new WrongLoginPwd());
-                }
-            } catch (RemoteException | NotBoundException | NoSuchAlgorithmException ex) {
+                }  
+            } catch (RemoteException | NotBoundException | NoSuchAlgorithmException  ex) {
                 Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

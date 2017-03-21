@@ -43,7 +43,6 @@ public class Client {
         MyFrame myF = new MyFrame();
         MyFrame.setInst(myF);
         JPanel jp = new ChoixConnection();
-        MyFrame.getInstance().setActualPanel(jp);
         //Ecran pour soit se connecter, soit s'inscrire
         myF.startPoint(jp);
     }
