@@ -3,6 +3,7 @@ package Bean;
 import Models.Category;
 import Models.User;
 import java.util.ArrayList;
+import tp_secondpart_client.Client;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -33,7 +34,7 @@ public class UserBean {
         return inst;
     }
 
-    public ArrayList<User> getAllUser() {
+ /*   public ArrayList<User> getAllUser() {
         try {
             ArrayList<User> userList = UserBdd.getAllUser();
             return userList;
@@ -41,15 +42,15 @@ public class UserBean {
             System.out.println(e);
             return null;
         }
-    }
+    } */
 
-    public void getAllNotUserCategories() {
+/*    public void getAllNotUserCategories() {
         try {
             this.allCategoriesExceptUser = CategoryBdd.getAllCategoryExceptUser(user);
         } catch (Exception e) {
             System.out.println(e);
         }
-    }
+    }*/
 
     public boolean isUserConnected() {
         return connected;
@@ -70,7 +71,7 @@ public class UserBean {
     public void addUserBdd(ArrayList<String> l) {
         User use = new User(l.get(0), l.get(2), l.get(1));
         try {
-            UserBdd.insertUser(use);
+            Client.getInstance().getUser().getStub().inscription(use);
         } catch (Exception err) {
             System.out.println(err);
         }

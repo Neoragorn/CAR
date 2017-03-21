@@ -25,6 +25,11 @@ public class MyFrame extends JPanel {
         return frame;
     }
 
+    public JPanel getActualPanel()
+    {
+        return actualPanel;
+    }
+    
     public void setFrame(JFrame frame) {
         this.frame = frame;
     }
@@ -52,6 +57,7 @@ public class MyFrame extends JPanel {
         return inst;
     }
 
+    
     public void setActualPanel(JPanel actualPanel) {
         this.actualPanel = actualPanel;
     }
@@ -79,7 +85,8 @@ public class MyFrame extends JPanel {
         this.actualPanel = jp;
     }
 
-    public void quit() {
+        public void quit() {
+        frame.setVisible(false);
         frame.dispose();
     }
 }

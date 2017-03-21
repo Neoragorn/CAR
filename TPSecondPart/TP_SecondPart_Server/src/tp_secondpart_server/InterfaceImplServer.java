@@ -66,7 +66,6 @@ public class InterfaceImplServer implements InterfaceServer {
             user.setClInter(cl);;
             mapClient.put(user, cl);
             this.user = user;
-            NotifyAll(" s'est connecté", user.getPseudo(), cl);
             return true;
         } catch (Exception ex) {
             Logger.getLogger(InterfaceImplServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -117,25 +116,27 @@ public class InterfaceImplServer implements InterfaceServer {
         ArrayList<MessageDiscussion> listmsg = MessageDiscussionBdd.getMessageFromDiscussion(discussion);
         return listmsg;
     }
-    
+
     @Override
-    public ArrayList<User> getDiscussionUsers(int id) throws RemoteException
-    {
+    public ArrayList<User> getDiscussionUsers(int id) throws RemoteException {
         ArrayList<User> users = DiscussionGroupBdd.getDiscussionGroupUserById(id);
         return users;
     }
-    
+
     @Override
-    public ArrayList<Category> getCategoryUser(int id) throws RemoteException
-    {
+    public ArrayList<Category> getCategoryUser(int id) throws RemoteException {
         ArrayList<Category> cat = CategoryBdd.getCategoryByUserId(id);
         return cat;
     }
-    
+
     @Override
-    public ArrayList<Message> getMessageUser(int id) throws RemoteException
-    {
+    public ArrayList<Message> getMessageUser(int id) throws RemoteException {
         ArrayList<Message> msglist = UserBdd.getPrivateMessageById(id);
         return msglist;
+    }
+
+    @Override
+    public void inscription(User user) throws RemoteException {
+        UserBdd.insertUser(user);
     }
 }

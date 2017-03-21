@@ -39,5 +39,7 @@ public interface InterfaceServer extends Remote {
     ArrayList<Category> getCategoryUser(int id) throws RemoteException;
     
     ArrayList<Message> getMessageUser(int id) throws RemoteException;
+   
+    void inscription(User user) throws RemoteException;
 
 }

@@ -37,9 +37,9 @@ public class DiscussionGroupBean {
         }
     }
 
-    public void destroyUserFromDiscussion(User user) throws SQLException {
+/*    public void destroyUserFromDiscussion(User user) throws SQLException {
         DiscussionGroupBdd.deleteUserFromDiscussionGroup(user, discussion);
-    }
+    }*/
 
     public ArrayList<DiscussionGroup> getNotJoinedDiscussionGroup() {
         return notJoinedDiscussionGroup;
@@ -53,15 +53,15 @@ public class DiscussionGroupBean {
         this.moderator = moderator;
     }
 
-    public void insertAssoUserDiscu(User user) throws SQLException {
+/*    public void insertAssoUserDiscu(User user) throws SQLException {
         DiscussionGroupBdd.insertAssoGroupUser(user, discussion);
     }
 
     public void addMessageToDiscussion(DiscussionGroup discussion, MessageDiscussion message, User user) throws SQLException {
         MessageDiscussionBdd.insertMessageIntoDiscussion(discussion, message, user);
     }
-
-    public void createDiscussion(User user, String title, String description) throws SQLException {
+*/
+/*    public void createDiscussion(User user, String title, String description) throws SQLException {
         DiscussionGroupBdd.createDiscussionGroupBdd(user.getIdUser(), title, description);
     }
 
@@ -79,7 +79,7 @@ public class DiscussionGroupBean {
         } catch (Exception e) {
             System.out.println(e);
         }
-    }
+    } */
 
     public boolean getModerator() {
         return moderator;

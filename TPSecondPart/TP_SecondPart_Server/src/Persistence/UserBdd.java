@@ -28,22 +28,26 @@ public class UserBdd {
 
     private static final Connection conn = PersistenceConnection.getInstance().getConn();
 
-    public static void insertUser(User user) throws SQLException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        String req = "INSERT INTO User VALUES (?, ?, ?, ?)";
-        MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
-        byte[] result = mDigest.digest(user.getPwd().getBytes());
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < result.length; i++) {
-            sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+    public static void insertUser(User user){
+        try {
+            String req = "INSERT INTO User VALUES (?, ?, ?, ?)";
+            MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
+            byte[] result = mDigest.digest(user.getPwd().getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < result.length; i++) {
+                sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            
+            user.setPwd(sb.toString());
+            PreparedStatement pss = conn.prepareStatement(req);
+            pss.setInt(1, user.getIdUser());
+            pss.setString(2, user.getPseudo());
+            pss.setString(3, user.getPwd());
+            pss.setString(4, user.getMail());
+            pss.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(UserBdd.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        user.setPwd(sb.toString());
-        PreparedStatement pss = conn.prepareStatement(req);
-        pss.setInt(1, user.getIdUser());
-        pss.setString(2, user.getPseudo());
-        pss.setString(3, user.getPwd());
-        pss.setString(4, user.getMail());
-        pss.executeUpdate();
     }
 
     public static void changeMail(User user, String mail) throws SQLException {

@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import tp_secondpart_client.Client;
+import tp_secondpart_client.InterfaceImplClient;
+import tp_secondpart_interface.InterfaceClient;
+import tp_secondpart_interface.InterfaceServer;
 
 /**
  *
@@ -61,7 +66,7 @@ public class WrongLoginPwd extends JPanel implements ActionListener {
         wrongMessage = new JLabel("Wrong login or/and password. Try again");
         wrongMessage.setOpaque(true);
         wrongMessage.setBounds(150, 150, 300, 20);
-        
+
         p1.add(boutonConnection);
         p1.add(TFPassword);
         p1.add(TFPseudo);
@@ -71,15 +76,20 @@ public class WrongLoginPwd extends JPanel implements ActionListener {
 
     }
 
-     @Override
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Connect")) {
             try {
                 Pseudo = TFPseudo.getText();
                 Password = TFPassword.getText();
+                Registry registry = LocateRegistry.getRegistry(4020);
+                InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
+                InterfaceClient clInter = new InterfaceImplClient();
+                Client.getInstance().setConnected(stub.Connect(Pseudo, Password, clInter));
                 if (Client.getInstance().isConnected()) {
                     Home home = new Home();
                     MyFrame.getInstance().getFrame().dispose();
+                    Client.getInstance().getUser().getStub().Send(" s'est connecté", Client.getInstance().getUser().getPseudo(), clInter);
                     MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
                     MyFrame.getInstance().changeFrame(home);
                 } else {

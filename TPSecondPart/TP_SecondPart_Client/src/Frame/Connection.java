@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import tp_secondpart_client.Client;
+import tp_secondpart_client.InterfaceImplClient;
+import tp_secondpart_client.MyThread;
+import tp_secondpart_interface.InterfaceClient;
+import tp_secondpart_interface.InterfaceServer;
 
 public class Connection extends JPanel implements ActionListener {
 
@@ -37,8 +43,8 @@ public class Connection extends JPanel implements ActionListener {
         JPanel p1 = new JPanel();
         p1.setLayout(null);
         p1.setOpaque(false);
-        TFPseudo = new JTextField("Neor");
-        TFPassword = new JPasswordField("123456789");
+        TFPseudo = new JTextField("soso");
+        TFPassword = new JPasswordField("123");
         TFPseudo.setBackground(new Color(255, 255, 255));
         TFPseudo.setForeground(new Color(0, 0, 0));
         TFPseudo.setBounds(150, 50, 200, 30);
@@ -62,10 +68,20 @@ public class Connection extends JPanel implements ActionListener {
             try {
                 Pseudo = TFPseudo.getText();
                 Password = TFPassword.getText();
-                
+                Registry registry = LocateRegistry.getRegistry(4020);
+                InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
+                InterfaceClient clInter = new InterfaceImplClient();
+                Client.getInstance().setConnected(stub.Connect(Pseudo, Password, clInter));
                 if (Client.getInstance().isConnected()) {
+                    Client.getInstance().setUser(stub.createUser());
+                    Client.getInstance().getUser().setRegistry(registry);
+                    Client.getInstance().getUser().setStub(stub);
+                    Client.getInstance().getUser().getStub().Send(" s'est connecté", Client.getInstance().getUser().getPseudo(), clInter);
                     Home home = new Home();
-                    MyFrame.getInstance().getFrame().dispose();
+                    if (!Client.getInstance().getMyThread().isRunning()) {
+                        Client.getInstance().getMyThread().start();
+                    }
+                    MyFrame.getInstance().quit();
                     MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
                     MyFrame.getInstance().changeFrame(home);
                 } else {
