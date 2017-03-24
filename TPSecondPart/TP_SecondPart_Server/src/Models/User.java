@@ -8,7 +8,7 @@ import tp_secondpart_interface.InterfaceClient;
 import tp_secondpart_interface.InterfaceServer;
 
 
-public class User implements Serializable {
+public class User  {
 
     protected String pseudo;
     protected String mail;

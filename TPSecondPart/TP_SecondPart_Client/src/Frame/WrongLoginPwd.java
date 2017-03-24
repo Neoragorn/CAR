@@ -5,7 +5,6 @@
  */
 package Frame;
 
-import Bean.UserBean;
 import static Frame.Connection.Pseudo;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -85,17 +84,23 @@ public class WrongLoginPwd extends JPanel implements ActionListener {
                 Registry registry = LocateRegistry.getRegistry(4021);
                 InterfaceServer stub = (InterfaceServer) registry.lookup("mini-chat");
                 InterfaceClient clInter = new InterfaceImplClient();
+                MyFrame.getInstance().getFrame().dispose();
                 Client.getInstance().setConnected(stub.Connect(Pseudo, Password, clInter));
                 if (Client.getInstance().isConnected()) {
-                    Home home = new Home();
-//                    MyFrame.getInstance().getFrame().dispose();
+                    Client.getInstance().setUser(stub.createUser());
+                    Client.getInstance().getUser().setRegistry(registry);
+                    Client.getInstance().getUser().setStub(stub);
+                    MyFrame.getInstance().quit();
+                    MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
+                    MyFrame.getInstance().changeFrame(new Home());
                     Client.getInstance().getUser().getStub().Send(" s'est connecté", Client.getInstance().getUser().getPseudo(), clInter);
-  //                  MyFrame.getInstance().setFrame(new JFrame("Welcome in Messenger"));
-    //                MyFrame.getInstance().changeFrame(home);
+                    if (!Client.getInstance().getMyThread().isRunning()) {
+                        Client.getInstance().getMyThread().start();
+                    }
                 } else {
                     MyFrame.getInstance().changeFrame(new WrongLoginPwd());
-                }
-            } catch (RemoteException | NotBoundException | NoSuchAlgorithmException ex) {
+                }  
+            } catch (RemoteException | NotBoundException | NoSuchAlgorithmException  ex) {
                 Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
