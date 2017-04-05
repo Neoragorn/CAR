@@ -10,6 +10,8 @@ public class User implements Serializable {
 
     protected String pseudo;
     protected String mail;
+    protected String nom;
+    protected String prenom;
     protected String pwd; 
     protected int idUser;
 //    protected ArrayList<Friend> friends = new ArrayList();
@@ -77,6 +79,23 @@ public class User implements Serializable {
     public void setIdUser(int idUser) {
         this.idUser = idUser;
     }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+    
     
     @Override
     public String toString() {

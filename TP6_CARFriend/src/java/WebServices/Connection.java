@@ -46,7 +46,8 @@ public class Connection {
             co.startConnection("casier", "C&?1+mur");
             return "<form action=\"Connection_check\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
                     + "	<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
-                    + "<input type=\"submit\" value=\"Submit\" \n /> </form>";
+                    + "<input type=\"submit\" value=\"Submit\" \n /> </form>"
+                    + "<form action=\"Inscription\"> <input type=\"submit\" value=\"Inscription\" \n /> </form>";
         } catch (Exception e) {
             System.out.println(e);
             return "error on connecting to database";
