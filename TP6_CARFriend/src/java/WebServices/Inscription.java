@@ -9,6 +9,7 @@ import static Persistence.PersistenceConnection.conn;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -32,25 +33,55 @@ public class Inscription {
     public Inscription() {
     }
 
+    public static User getUser(String pseudo){
+        try {
+            User user = new User();
+            String req = "SELECT * FROM User WHERE pseudo = ? ";
+            PreparedStatement pss = conn.prepareStatement(req);
+            pss.setString(1, pseudo);
+            ResultSet rs = pss.executeQuery();
+            rs.next();
+            user.setIdUser(rs.getInt(1));
+            user.setPseudo(rs.getString(2));
+            user.setMail(rs.getString(4));
+            return user;
+        } catch (SQLException e) {
+                System.out.println("Erreur dans le login et/ou le mot de passe" + e);
+                return null;
+        }
+    }
+    
     @GET
     @Produces("text/html")
     public String inscriptionForm() {
-        return "<form action=\"Inscription/bdd\" method=\"POST\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
-                + "<label for=\"Nom\">Nom :</label><input name=\"Nom\" type=\"text\" id=\"Nom\" /><br />\n"
-                + "<label for=\"Prenom\">Prenom :</label><input name=\"Prenom\" type=\"text\" id=\"Prenom\" /><br />\n"
-                + "<label for=\"Mail\">Mail :</label><input name=\"Mail\" type=\"email\" id=\"Mail\" /><br />\n"
-                + "<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n <br/>"
+        return "<form action=\"Inscription/bdd\" method=\"POST\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" required /><br />\n"
+                + "<label for=\"Nom\">Nom :</label><input name=\"Nom\" type=\"text\" id=\"Nom\" required /><br />\n"
+                + "<label for=\"Prenom\">Prenom :</label><input name=\"Prenom\" type=\"text\" id=\"Prenom\" required /><br />\n"
+                + "<label for=\"Mail\">Mail :</label><input name=\"Mail\" type=\"email\" id=\"Mail\" required /><br />\n"
+                + "<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" required />\n <br/>"
                 + "<input type=\"submit\" value=\"Inscription\" \n /> </form>";
     }
 
+    @Produces("text/html")
+    public String inscriptionFormRedone() {
+        return "<form action=\"../Inscription/bdd\" method=\"POST\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" required /><br />\n"
+                + "<label for=\"Nom\">Nom :</label><input name=\"Nom\" type=\"text\" id=\"Nom\" required /><br />\n"
+                + "<label for=\"Prenom\">Prenom :</label><input name=\"Prenom\" type=\"text\" id=\"Prenom\" required /><br />\n"
+                + "<label for=\"Mail\">Mail :</label><input name=\"Mail\" type=\"email\" id=\"Mail\" required /><br />\n"
+                + "<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" required />\n <br/>"
+                + "<input type=\"submit\" value=\"Inscription\" \n /> </form>";
+    }
     @POST
     @Path("/bdd")
     @Produces("text/html")
     public String inscription(@FormParam("pseudo") String pseudo, @FormParam("Nom") String Nom, @FormParam("Prenom") String Prenom,
             @FormParam("password") String Password, @FormParam("Mail") String mail) {
         try {
-            System.out.println(pseudo + Nom + Prenom + Password + mail);
-            User user = new User();
+            //System.out.println(pseudo + Nom + Prenom + Password + mail);            
+            User user = getUser(pseudo);
+            if (user != null)
+                return  "Error, user already existing" + inscriptionFormRedone();
+            user =  new User();
             user.setPrenom(Prenom);
             user.setNom(Nom);
             user.setPseudo(pseudo);
@@ -71,10 +102,10 @@ public class Inscription {
             pss.setString(3, user.getPwd());
             pss.setString(4, user.getMail());
             pss.executeUpdate();
-            return "Inscription completed !";
+            return "Inscription completed !" + new Connection().connectionFormAfterInscription(); 
         } catch (NoSuchAlgorithmException | SQLException ex) {
             System.out.println(ex);
-            return "Error, user already existing";
+            return "Error, user already existing" + inscriptionFormRedone();
         }
     }
 

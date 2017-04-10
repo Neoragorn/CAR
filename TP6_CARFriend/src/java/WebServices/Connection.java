@@ -31,6 +31,12 @@ public class Connection {
      * Creates a new instance of ServiceResource
      */
     public Connection() {
+        PersistenceConnection co = new PersistenceConnection();
+        try {
+            co.startConnection("casier", "C&?1+mur");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     /**
@@ -41,17 +47,20 @@ public class Connection {
     @GET
     @Produces("text/html")
     public String connectionForm() {
-        PersistenceConnection co = new PersistenceConnection();
-        try {
-            co.startConnection("casier", "C&?1+mur");
-            return "<form action=\"Connection_check\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
-                    + "	<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
-                    + "<input type=\"submit\" value=\"Submit\" \n /> </form>"
-                    + "<form action=\"Inscription\"> <input type=\"submit\" value=\"Inscription\" \n /> </form>";
-        } catch (Exception e) {
-            System.out.println(e);
-            return "error on connecting to database";
-        }
+        return "<form action=\"Connection_check\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
+                + "	<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
+                + "<input type=\"submit\" value=\"Submit\" \n /> </form>"
+                + "<form action=\"Inscription\"> <input type=\"submit\" value=\"Inscription\" \n /> </form>";
+
+    }
+
+    @Produces("text/html")
+    public String connectionFormAfterInscription() {
+        return "<form action=\"../Connection_check\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
+                + "	<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
+                + "<input type=\"submit\" value=\"Submit\" \n /> </form>"
+                + "<form action=\"Inscription\"> <input type=\"submit\" value=\"Inscription\" \n /> </form>";
+
     }
 
     /**

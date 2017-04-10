@@ -38,7 +38,7 @@ public class Connection_check {
         if (checkConnecting(pseudo, pwd)) {
             return "Checking info : " + pseudo + "   " + pwd;
         }
-        return "Error on connecting";
+        return "Error on connecting. Wrong password or login" + new Connection().connectionForm();
     }
 
     public boolean checkConnecting(String pseudo, String password) throws NoSuchAlgorithmException {
