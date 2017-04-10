@@ -6,6 +6,7 @@
 package WebServices;
 
 import static Persistence.PersistenceConnection.conn;
+import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
@@ -21,6 +22,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import models.User;
 
@@ -56,7 +58,7 @@ public class Connection_check {
     }
 
     @GET
-    public String connecting(@QueryParam("pseudo") String pseudo, @QueryParam("password") String pwd) throws NoSuchAlgorithmException, SQLException {
+    public Response connecting(@QueryParam("pseudo") String pseudo, @QueryParam("password") String pwd) throws NoSuchAlgorithmException, SQLException {
 
         if (checkConnecting(pseudo, pwd)) {
             MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
@@ -67,12 +69,14 @@ public class Connection_check {
             }
             response.addCookie(new javax.servlet.http.Cookie(pseudo, sb.toString()));
             updateConnection(user);
-            return new Home(request, user).displayHome();
+            Persistence.PersistenceConnection.getInstance().setUser(user);
+            return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
         }
-        return "Error on connecting. Wrong password or login" + new Connection().connectionForm();
-    }
+        return null;
+//        return "Error on connecting. Wrong password or login" + new Connection().connectionForm();
+}
 
-    public boolean checkConnecting(String pseudo, String password) throws NoSuchAlgorithmException {
+public boolean checkConnecting(String pseudo, String password) throws NoSuchAlgorithmException {
         String req = "SELECT * FROM User WHERE pseudo = ? AND password = ? ";
         try {
             User user = new User();
@@ -92,9 +96,14 @@ public class Connection_check {
             user.setMail(rs.getString(4));
             this.user = user;
             return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(Connection_check.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+        
+
+} catch (SQLException ex) {
+            Logger.getLogger(Connection_check.class  
+
+    .getName()).log(Level.SEVERE, null, ex);
+
+return false;
         }
     }
 }

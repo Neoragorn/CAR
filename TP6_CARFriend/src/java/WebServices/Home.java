@@ -19,7 +19,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import models.Friend;
 import models.User;
@@ -42,9 +41,8 @@ public class Home {
     @Context
     private HttpServletResponse response;
 
-    public Home(HttpServletRequest request, User user) {
-        this.request = request;
-        this.user = user;
+    public Home() {
+        this.user = Persistence.PersistenceConnection.getInstance().getUser();
     }
 
     public ArrayList<Friend> getFriends(User user) throws SQLException {
@@ -95,7 +93,6 @@ public class Home {
         return userList;
     }
 
-    @Path("Home")
     @GET
     @Produces("text/html")
     public String displayHome() {

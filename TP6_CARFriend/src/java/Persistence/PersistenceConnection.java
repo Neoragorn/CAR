@@ -3,12 +3,14 @@ package Persistence;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.servlet.annotation.WebListener;
+import models.User;
 
 public class PersistenceConnection {
 
     static PersistenceConnection inst;
 
+    private User user = null;
+    
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://webtp.fil.univ-lille1.fr/casier";
 
@@ -46,4 +48,13 @@ public class PersistenceConnection {
 
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    
 }
