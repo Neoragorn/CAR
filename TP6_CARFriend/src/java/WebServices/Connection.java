@@ -27,9 +27,6 @@ public class Connection {
     @Context
     private UriInfo context;
 
-    /**
-     * Creates a new instance of ServiceResource
-     */
     public Connection() {
         PersistenceConnection co = new PersistenceConnection();
         try {
@@ -38,12 +35,7 @@ public class Connection {
             System.out.println(e);
         }
     }
-
-    /**
-     * Retrieves representation of an instance of com.example.ServiceResource
-     *
-     * @return an instance of java.lang.String
-     */
+    
     @GET
     @Produces("text/html")
     public String connectionForm() {
@@ -51,23 +43,16 @@ public class Connection {
                 + "	<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
                 + "<input type=\"submit\" value=\"Submit\" \n /> </form>"
                 + "<form action=\"Inscription\"> <input type=\"submit\" value=\"Inscription\" \n /> </form>";
-
     }
 
     @Produces("text/html")
     public String connectionFormAfterInscription() {
         return "<form action=\"../Connection_check\"> <label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
-                + "	<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
+                + "<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" />\n\n"
                 + "<input type=\"submit\" value=\"Submit\" \n /> </form>"
                 + "<form action=\"Inscription\"> <input type=\"submit\" value=\"Inscription\" \n /> </form>";
-
     }
 
-    /**
-     * PUT method for updating or creating an instance of ServiceResource
-     *
-     * @param content representation for the resource
-     */
     @PUT
     @Consumes(MediaType.TEXT_HTML)
     public void putHtml(String content) {

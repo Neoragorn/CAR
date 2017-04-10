@@ -80,14 +80,17 @@ public class Inscription {
             //System.out.println(pseudo + Nom + Prenom + Password + mail);            
             User user = getUser(pseudo);
             if (user != null)
-                return  "Error, user already existing" + inscriptionFormRedone();
+            {
+                return  "FIrst condition Error, user already existing" + inscriptionFormRedone();
+            }
             user =  new User();
             user.setPrenom(Prenom);
             user.setNom(Nom);
             user.setPseudo(pseudo);
             user.setMail(mail);
             user.setPwd(Password);
-            String req = "INSERT INTO User VALUES (?, ?, ?, ?)";
+            System.out.println("ARRIVE A INSERT");
+            String req = "INSERT INTO User VALUES (?, ?, ?, ?, ?)";
             MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
             byte[] result = mDigest.digest(user.getPwd().getBytes());
             StringBuilder sb = new StringBuilder();
@@ -101,11 +104,12 @@ public class Inscription {
             pss.setString(2, user.getPseudo());
             pss.setString(3, user.getPwd());
             pss.setString(4, user.getMail());
+            pss.setDate(5, null);
             pss.executeUpdate();
             return "Inscription completed !" + new Connection().connectionFormAfterInscription(); 
         } catch (NoSuchAlgorithmException | SQLException ex) {
             System.out.println(ex);
-            return "Error, user already existing" + inscriptionFormRedone();
+            return " exception Error, user already existing" + inscriptionFormRedone();
         }
     }
 

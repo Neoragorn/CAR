@@ -5,13 +5,18 @@
  */
 package WebServices;
 
+import static Persistence.PersistenceConnection.conn;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -26,17 +31,43 @@ import models.User;
 @Path("Connection_check")
 public class Connection_check {
 
+    private User user;
+
     @Context
     private UriInfo context;
+
+    @Context
+    private HttpServletRequest request;
+
+    @Context
+    private HttpServletResponse response;
 
     public Connection_check() {
     }
 
+    public static void updateConnection(User user) throws SQLException {
+        String req = "UPDATE User SET LastConnection = ? WHERE idUser = ?";
+        Date aujourdhui = new Date();
+        DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+        PreparedStatement pss = conn.prepareStatement(req);
+        pss.setString(1, shortDateFormat.format(aujourdhui));
+        pss.setInt(2, user.getIdUser());
+        pss.executeUpdate();
+    }
+
     @GET
-    public String connecting(@QueryParam("pseudo") String pseudo, @QueryParam("password") String pwd) throws NoSuchAlgorithmException {
+    public String connecting(@QueryParam("pseudo") String pseudo, @QueryParam("password") String pwd) throws NoSuchAlgorithmException, SQLException {
 
         if (checkConnecting(pseudo, pwd)) {
-            return "Checking info : " + pseudo + "   " + pwd;
+            MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
+            byte[] result = mDigest.digest(pwd.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < result.length; i++) {
+                sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            response.addCookie(new javax.servlet.http.Cookie(pseudo, sb.toString()));
+            updateConnection(user);
+            return new Home(request, user).displayHome();
         }
         return "Error on connecting. Wrong password or login" + new Connection().connectionForm();
     }
@@ -59,6 +90,7 @@ public class Connection_check {
             user.setIdUser(rs.getInt(1));
             user.setPseudo(rs.getString(2));
             user.setMail(rs.getString(4));
+            this.user = user;
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(Connection_check.class.getName()).log(Level.SEVERE, null, ex);
