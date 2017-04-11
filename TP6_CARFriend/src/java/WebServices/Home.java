@@ -50,6 +50,28 @@ public class Home {
         this.user = Persistence.PersistenceConnection.getInstance().getUser();
     }
 
+    public static ArrayList<User> getUserBySearch(String pseudo) throws SQLException, NoSuchAlgorithmException {
+        try {
+            if (pseudo.isEmpty()) {
+                return null;
+            }
+            String req = "SELECT idUser, pseudo, mail FROM User WHERE pseudo like ?";
+            ArrayList<User> userList = new ArrayList();
+            PreparedStatement pss = conn.prepareStatement(req);
+
+            pss.setString(1, pseudo + '%');
+            ResultSet rs = pss.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
+                userList.add(u);
+            }
+            return userList;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
     public Friend getFriendByPseudo(String pseudo) throws SQLException, NoSuchAlgorithmException {
         try {
             String req = "SELECT idUser, pseudo, mail, LastConnection FROM User WHERE pseudo = ?";
@@ -114,6 +136,13 @@ public class Home {
         return userList;
     }
 
+    @Produces("text/html")
+    public String searchEngine() {
+        return "<form action=\"Home/searchEngineResult\" method=\"POST\">"
+                + "<label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
+                + "<input type=\"submit\" value=\"Searching User\" \n /> </form>";
+    }
+
     @GET
     @Produces("text/html")
     public String displayHome() {
@@ -121,6 +150,7 @@ public class Home {
             String str = "Pseudo : " + this.user.getPseudo() + " Mail : " + this.user.getMail() + "<br><br>";
             str += displayFriend() + "<br>";
             str += displayUsersNotFriend();
+            str += searchEngine();
             return str;
         } catch (Exception ex) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
@@ -183,7 +213,6 @@ public class Home {
     @Produces("text/html")
     @Path("/addFriend")
     public Response addFriend(@FormParam("UserInfo") String friend) throws SQLException, NoSuchAlgorithmException {
-        System.out.println("ENTRERED ADDFIRNED");
         Friend fr = getFriendByPseudo(friend);
         updateFriendAsso(user, fr);
         return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
@@ -193,9 +222,26 @@ public class Home {
     @Produces("text/html")
     @Path("/removeFriend")
     public Response removeFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
-        System.out.println("ENTRERED ADDFIRNED");
         Friend fr = getFriendByPseudo(friend);
         removeFriendAsso(user, fr);
         return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
+    }
+    
+    @POST
+    @Produces("text/html")
+    @Path("/searchEngineResult")
+    public String searchEngineResult(@FormParam("pseudo") String pseudo) {
+        try {
+            ArrayList<User> listUser = getUserBySearch(pseudo);
+            String str = "";
+            for (User user : listUser)
+            {
+                str += user.getPseudo() + "<br>";
+            }
+            return str;
+        } catch (SQLException | NoSuchAlgorithmException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+            return "Nothing to be found";
+        }
     }
 }
