@@ -36,6 +36,7 @@ import models.User;
 public class Home {
 
     private User user;
+    private String SearchResult = "";
 
     @Context
     private UriInfo context;
@@ -151,6 +152,8 @@ public class Home {
             str += displayFriend() + "<br>";
             str += displayUsersNotFriend();
             str += searchEngine();
+            str += SearchResult;
+            this.SearchResult = "";
             return str;
         } catch (Exception ex) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
@@ -226,22 +229,20 @@ public class Home {
         removeFriendAsso(user, fr);
         return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
     }
-    
+
     @POST
     @Produces("text/html")
     @Path("/searchEngineResult")
     public String searchEngineResult(@FormParam("pseudo") String pseudo) {
         try {
             ArrayList<User> listUser = getUserBySearch(pseudo);
-            String str = "";
-            for (User user : listUser)
-            {
-                str += user.getPseudo() + "<br>";
+            for (User user : listUser) {
+                SearchResult += user.getPseudo() + "<br>";
             }
-            return str;
-        } catch (SQLException | NoSuchAlgorithmException ex) {
+            return SearchResult + "<form action=\"../Home\"> <input type=\"submit\" value=\"Retour à l'accueil\" \n /> </form>";
+        } catch (Exception ex) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-            return "Nothing to be found";
+            return "Aucun resultat ! <form action=\"../Home\"> <input type=\"submit\" value=\"Retour à l'accueil\" \n /> </form>";
         }
     }
 }
