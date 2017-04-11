@@ -6,6 +6,7 @@
 package WebServices;
 
 import static Persistence.PersistenceConnection.conn;
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +23,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import models.Friend;
 import models.User;
@@ -170,10 +172,10 @@ public class Home {
     @POST
     @Produces("text/html")
     @Path("/addFriend")
-    public String addFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
+    public Response addFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
        System.out.println("ENTRERED ADDFIRNED");
         Friend fr = getFriendByPseudo(friend);
         updateFriendAsso(user, fr);
-        return displayHome();
+        return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
     }
 }
