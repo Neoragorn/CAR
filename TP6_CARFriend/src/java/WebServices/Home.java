@@ -6,6 +6,7 @@
 package WebServices;
 
 import static Persistence.PersistenceConnection.conn;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,9 @@ import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -43,6 +46,22 @@ public class Home {
 
     public Home() {
         this.user = Persistence.PersistenceConnection.getInstance().getUser();
+    }
+
+    public Friend getFriendByPseudo(String pseudo) throws SQLException, NoSuchAlgorithmException {
+        try {
+            String req = "SELECT idUser, pseudo, mail, LastConnection FROM User WHERE pseudo = ?";
+            PreparedStatement pss = conn.prepareStatement(req);
+            pss.setString(1, pseudo);
+            ResultSet rs = pss.executeQuery();
+            rs.next();
+            Friend fr = new Friend(rs.getInt(1), rs.getString(2), rs.getString(3));
+            fr.setLastConnection(rs.getString(4));
+            return fr;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
     public ArrayList<Friend> getFriends(User user) throws SQLException {
@@ -111,11 +130,13 @@ public class Home {
     public String displayUsersNotFriend() {
         try {
             ArrayList<User> listUser = getAllUser();
-            String userInfo = "<table border=\"1\"><tr><td colspan=\"3\">User List</td></tr>";
+            String userInfo = "<form action=\"Home/addFriend\" method=\"POST\"><table border=\"1\"><tr><td colspan=\"3\">User List</td></tr>";
             for (User fr : listUser) {
-                userInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td><td><form action=\"Home\"> <input type=\"submit\" value=\"Add Friend\"/> </form> </td></tr>";
+                userInfo += "<tr><td>" + fr.getPseudo() + "</td><td>"
+                        + fr.getMail() + "</td><td> <input type=\"submit\""
+                        + " name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
             }
-            userInfo += "</table>";
+            userInfo += "</table></form>";
             return userInfo;
         } catch (SQLException ex) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
@@ -136,5 +157,23 @@ public class Home {
         }
         friendInfo += "</table>";
         return friendInfo;
+    }
+
+     public static void updateFriendAsso(User user, Friend friend) throws SQLException {
+        String req = "INSERT INTO Friend (idFriend, idUser) values (?, ?) ";
+        PreparedStatement pss = conn.prepareStatement(req);
+        pss.setInt(1, friend.getIdFriend());
+        pss.setInt(2, user.getIdUser());
+        pss.executeUpdate();
+    }
+     
+    @POST
+    @Produces("text/html")
+    @Path("/addFriend")
+    public String addFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
+       System.out.println("ENTRERED ADDFIRNED");
+        Friend fr = getFriendByPseudo(friend);
+        updateFriendAsso(user, fr);
+        return displayHome();
     }
 }

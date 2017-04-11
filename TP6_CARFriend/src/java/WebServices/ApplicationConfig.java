@@ -30,7 +30,6 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(WebServices.Connection.class);
         resources.add(WebServices.Connection_check.class);
-        resources.add(WebServices.Connection_succesful.class);
         resources.add(WebServices.Home.class);
         resources.add(WebServices.Inscription.class);
     }

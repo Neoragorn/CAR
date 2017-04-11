@@ -71,13 +71,13 @@ public class Inscription {
                 + "<label for=\"password\">Mot de Passe :</label><input type=\"password\" name=\"password\" id=\"password\" required />\n <br/>"
                 + "<input type=\"submit\" value=\"Inscription\" \n /> </form>";
     }
+    
     @POST
     @Path("/bdd")
     @Produces("text/html")
     public String inscription(@FormParam("pseudo") String pseudo, @FormParam("Nom") String Nom, @FormParam("Prenom") String Prenom,
             @FormParam("password") String Password, @FormParam("Mail") String mail) {
         try {
-            //System.out.println(pseudo + Nom + Prenom + Password + mail);            
             User user = getUser(pseudo);
             if (user != null)
             {
@@ -89,7 +89,6 @@ public class Inscription {
             user.setPseudo(pseudo);
             user.setMail(mail);
             user.setPwd(Password);
-            System.out.println("ARRIVE A INSERT");
             String req = "INSERT INTO User VALUES (?, ?, ?, ?, ?)";
             MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
             byte[] result = mDigest.digest(user.getPwd().getBytes());

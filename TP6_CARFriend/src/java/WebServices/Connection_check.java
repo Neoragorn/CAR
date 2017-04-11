@@ -72,11 +72,10 @@ public class Connection_check {
             Persistence.PersistenceConnection.getInstance().setUser(user);
             return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
         }
-        return null;
-//        return "Error on connecting. Wrong password or login" + new Connection().connectionForm();
-}
+        return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Connection")).build();
+    }
 
-public boolean checkConnecting(String pseudo, String password) throws NoSuchAlgorithmException {
+    public boolean checkConnecting(String pseudo, String password) throws NoSuchAlgorithmException {
         String req = "SELECT * FROM User WHERE pseudo = ? AND password = ? ";
         try {
             User user = new User();
@@ -96,14 +95,12 @@ public boolean checkConnecting(String pseudo, String password) throws NoSuchAlgo
             user.setMail(rs.getString(4));
             this.user = user;
             return true;
-        
 
-} catch (SQLException ex) {
-            Logger.getLogger(Connection_check.class  
+        } catch (SQLException ex) {
+            Logger.getLogger(Connection_check.class
+                    .getName()).log(Level.SEVERE, null, ex);
 
-    .getName()).log(Level.SEVERE, null, ex);
-
-return false;
+            return false;
         }
     }
 }
