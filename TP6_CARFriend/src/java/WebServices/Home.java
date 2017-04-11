@@ -136,7 +136,7 @@ public class Home {
             for (User fr : listUser) {
                 userInfo += "<tr><td>" + fr.getPseudo() + "</td><td>"
                         + fr.getMail() + "</td><td> <input type=\"submit\""
-                        + " name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
+                        + " name=\"UserInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
             }
             userInfo += "</table></form>";
             return userInfo;
@@ -148,34 +148,54 @@ public class Home {
 
     @Produces("text/html")
     public String displayFriend() throws SQLException {
-        String friendInfo = "<table border=\"1\"><tr><td colspan=\"4\">Friend List</td></tr>";
+        String friendInfo = "<form action=\"Home/removeFriend\" method=\"POST\"><table border=\"1\"><tr><td colspan=\"4\">Friend List</td><td> Remove Friend </td></tr>";
         ArrayList<Friend> listFriend = getFriends(this.user);
         for (Friend fr : listFriend) {
             if (!fr.isConnected()) {
-                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>" + "<td>Deconnecte</td><td>Derniere connection : " + fr.getLastConnection() + "</td>" + "</tr>";
+                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>" + "<td>Deconnecte</td><td>Derniere connection : " + fr.getLastConnection() + "</td>" + "<td> <input type=\"submit\""
+                        + " name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
             } else {
-                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>" + "<td>Connecte</td><td></td</tr>";
+                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>" + "<td>Connecte</td><td></td> <td> <input type=\"submit\""
+                        + " name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
             }
         }
-        friendInfo += "</table>";
+        friendInfo += "</table></form>";
         return friendInfo;
     }
 
-     public static void updateFriendAsso(User user, Friend friend) throws SQLException {
+    public static void updateFriendAsso(User user, Friend friend) throws SQLException {
         String req = "INSERT INTO Friend (idFriend, idUser) values (?, ?) ";
         PreparedStatement pss = conn.prepareStatement(req);
         pss.setInt(1, friend.getIdFriend());
         pss.setInt(2, user.getIdUser());
         pss.executeUpdate();
     }
-     
+
+    public static void removeFriendAsso(User user, Friend friend) throws SQLException {
+        String req = "DELETE FROM Friend WHERE idUser = ? AND idFriend = ? ";
+        PreparedStatement pss = conn.prepareStatement(req);
+        pss.setInt(1, user.getIdUser());
+        pss.setInt(2, friend.getIdFriend());
+        pss.executeUpdate();
+    }
+
     @POST
     @Produces("text/html")
     @Path("/addFriend")
-    public Response addFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
-       System.out.println("ENTRERED ADDFIRNED");
+    public Response addFriend(@FormParam("UserInfo") String friend) throws SQLException, NoSuchAlgorithmException {
+        System.out.println("ENTRERED ADDFIRNED");
         Friend fr = getFriendByPseudo(friend);
         updateFriendAsso(user, fr);
+        return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
+    }
+
+    @POST
+    @Produces("text/html")
+    @Path("/removeFriend")
+    public Response removeFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
+        System.out.println("ENTRERED ADDFIRNED");
+        Friend fr = getFriendByPseudo(friend);
+        removeFriendAsso(user, fr);
         return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
     }
 }
