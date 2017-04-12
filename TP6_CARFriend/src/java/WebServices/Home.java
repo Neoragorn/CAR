@@ -229,7 +229,7 @@ public class Home {
         for (Statut st : listStatut) {
             str += "<form action=\"Home/addComment\" method=\"POST\"> <table border=\"1\"><tr><td>" + this.user.getPseudo() + "   " + st.getPublication() + "</td></tr>";
             str += "<tr><td><b>Statut</b></td></tr><tr><td>" + st.getStatut() + " </td></tr><tr><td><b>Commentaires</b></td></tr>";
-            for (Comment com : st.getCommentList()) {                
+            for (Comment com : st.getCommentList()) {
                 str += "<tr><td>" + com.getAuteur() + " : " + com.getCommentaire() + "</td></tr>";
             }
             str += "<tr><td><input type=\"text\" name=\"idStatut\" value=\"" + st.getIdStatut()
@@ -267,8 +267,8 @@ public class Home {
             String userInfo = "<form action=\"Home/addFriend\" method=\"POST\"><table border=\"1\"><tr><td colspan=\"3\">User List</td></tr>";
             for (User fr : listUser) {
                 userInfo += "<tr><td>" + fr.getPseudo() + "</td><td>"
-                        + fr.getMail() + "</td><td> <input type=\"submit\""
-                        + " name=\"UserInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
+                        + fr.getMail() + "</td><td>"
+                        + "<input type=\"submit\" value=\"" + fr.getPseudo() + "\" name=\"UserInfo\"></td></tr>";
             }
             userInfo += "</table></form>";
             return userInfo;
@@ -284,11 +284,14 @@ public class Home {
         ArrayList<Friend> listFriend = getFriends(this.user);
         for (Friend fr : listFriend) {
             if (!fr.isConnected()) {
-                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>" + "<td>Deconnecte</td><td>Derniere connection : " + fr.getLastConnection() + "</td>" + "<td> <input type=\"submit\""
-                        + " name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
+                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>"
+                        + "<td>Deconnecte</td><td>Derniere connection : " + fr.getLastConnection() + "</td>"
+                        + "<td>"
+                        + "<input type=\"submit\" name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
             } else {
-                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>" + "<td>Connecte</td><td></td> <td> <input type=\"submit\""
-                        + " name=\"frInfo\" value=\"" + fr.getPseudo() + "\"></td></tr>";
+                friendInfo += "<tr><td>" + fr.getPseudo() + "</td><td>" + fr.getMail() + "</td>"
+                        + "<td>Connecte</td><td></td> <td>"
+                        + "<input type=\"submit\" value=\"" + fr.getPseudo() + "\" name=\"frInfo\"></td></tr>";
             }
         }
         friendInfo += "</table></form>";
@@ -341,6 +344,7 @@ public class Home {
     @Produces("text/html")
     @Path("/removeFriend")
     public Response removeFriend(@FormParam("frInfo") String friend) throws SQLException, NoSuchAlgorithmException {
+        System.out.println("PSEUDO FRIEND IS " + friend);
         Friend fr = getFriendByPseudo(friend);
         removeFriendAsso(user, fr);
         return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
