@@ -11,12 +11,15 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,7 +28,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import models.Comment;
 import models.Friend;
+import models.Statut;
 import models.User;
 
 /**
@@ -49,6 +54,37 @@ public class Home {
 
     public Home() {
         this.user = Persistence.PersistenceConnection.getInstance().getUser();
+    }
+
+    public void insertNewCommentaire(String commentaire, String idStatut) {
+        try {
+            String req = "INSERT INTO Comment (auteur, comment, publication, idStatut) values (?, ?, ?, ?) ";
+            PreparedStatement pss = conn.prepareStatement(req);
+            Date aujourdhui = new Date();
+            DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+            pss.setString(1, this.user.getPseudo());
+            pss.setString(2, commentaire);
+            pss.setString(3, shortDateFormat.format(aujourdhui));
+            pss.setInt(4, Integer.parseInt(idStatut));
+            pss.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void insertNewStatut(String statut) {
+        try {
+            String req = "INSERT INTO Statut (auteur, statut, publication) values (?, ?, ?) ";
+            PreparedStatement pss = conn.prepareStatement(req);
+            Date aujourdhui = new Date();
+            DateFormat shortDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+            pss.setString(1, this.user.getPseudo());
+            pss.setString(2, statut);
+            pss.setString(3, shortDateFormat.format(aujourdhui));
+            pss.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static ArrayList<User> getUserBySearch(String pseudo) throws SQLException, NoSuchAlgorithmException {
@@ -137,11 +173,72 @@ public class Home {
         return userList;
     }
 
+    public ArrayList<Statut> getAllStatut() throws SQLException {
+        ArrayList<Statut> statutList = new ArrayList();
+
+        String req = "Select idStatut, auteur, statut, publication "
+                + "FROM Statut "
+                + "ORDER BY publication DESC";
+        PreparedStatement pss = conn.prepareStatement(req);
+        ResultSet rs = pss.executeQuery();
+        while (rs.next()) {
+            Statut statut = new Statut(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
+            ArrayList<Comment> listCom = getCommentByStatut(String.valueOf(rs.getInt(1)));
+            statut.setCommentList(listCom);
+            statutList.add(statut);
+        }
+        return statutList;
+    }
+
+    public ArrayList<Comment> getCommentByStatut(String idStatut) throws SQLException {
+        ArrayList<Comment> commentList = new ArrayList();
+
+        String req = "Select idComment, c.auteur, c.comment, c.publication "
+                + "FROM Comment c "
+                + "JOIN Statut st on st.idStatut = c.idStatut "
+                + "WHERE c.idStatut = ? "
+                + "ORDER BY publication";
+        PreparedStatement pss = conn.prepareStatement(req);
+        pss.setInt(1, Integer.parseInt(idStatut));
+        ResultSet rs = pss.executeQuery();
+        while (rs.next()) {
+            Comment comment = new Comment(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
+            commentList.add(comment);
+        }
+        return commentList;
+    }
+
     @Produces("text/html")
     public String searchEngine() {
         return "<form action=\"Home/searchEngineResult\" method=\"POST\">"
                 + "<label for=\"pseudo\">Pseudo :</label><input name=\"pseudo\" type=\"text\" id=\"pseudo\" /><br />\n"
                 + "<input type=\"submit\" value=\"Searching User\" \n /> </form>";
+    }
+
+    @Produces("text/html")
+    public String displayAddStatut() {
+        return "<form action=\"Home/addStatut\" method=\"POST\">"
+                + "<label for=\"Statut\">Statut :</label><input name=\"statut\" type=\"text\" id=\"statut\" /><br />\n"
+                + "<input type=\"submit\" value=\"Add Statut\" \n /> </form>";
+    }
+
+    @Produces("text/html")
+    public String displayStatut() throws SQLException {
+        ArrayList<Statut> listStatut = getAllStatut();
+        String str = "";
+        for (Statut st : listStatut) {
+            str += "<form action=\"Home/addComment\" method=\"POST\"> <table border=\"1\"><tr><td>" + this.user.getPseudo() + "   " + st.getPublication() + "</td></tr>";
+            str += "<tr><td><b>Statut</b></td></tr><tr><td>" + st.getStatut() + " </td></tr><tr><td><b>Commentaires</b></td></tr>";
+            for (Comment com : st.getCommentList()) {                
+                str += "<tr><td>" + com.getAuteur() + " : " + com.getCommentaire() + "</td></tr>";
+            }
+            str += "<tr><td><input type=\"text\" name=\"idStatut\" value=\"" + st.getIdStatut()
+                    + "\" hidden /> <label for=\"Commentaire\">Commentaire :</label><input name=\"commentaire\""
+                    + "type=\"text\" id=\"commentaire\" required />"
+                    + "<input type=\"submit\" name=\"Comment\" value=\"Comment\" \n /></td></tr>"
+                    + "</table> </form> <br/>";
+        }
+        return str;
     }
 
     @GET
@@ -153,6 +250,8 @@ public class Home {
             str += displayUsersNotFriend();
             str += searchEngine();
             str += SearchResult;
+            str += displayAddStatut();
+            str += displayStatut();
             this.SearchResult = "";
             return str;
         } catch (Exception ex) {
@@ -218,6 +317,23 @@ public class Home {
     public Response addFriend(@FormParam("UserInfo") String friend) throws SQLException, NoSuchAlgorithmException {
         Friend fr = getFriendByPseudo(friend);
         updateFriendAsso(user, fr);
+        return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
+    }
+
+    @POST
+    @Produces("text/html")
+    @Path("/addStatut")
+    public Response addStatut(@FormParam("statut") String statut) throws SQLException, NoSuchAlgorithmException {
+        insertNewStatut(statut);
+        return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
+    }
+
+    @POST
+    @Produces("text/html")
+    @Path("/addComment")
+    public Response addComment(@FormParam("commentaire") String commentaire, @FormParam("idStatut") String statut) throws SQLException, NoSuchAlgorithmException {
+        System.out.println("Comment => " + commentaire + "  statutid => " + statut);
+        insertNewCommentaire(commentaire, statut);
         return Response.seeOther(URI.create("/TP6_CARFriend/WebResource/Home")).build();
     }
 
